@@ -1,0 +1,115 @@
+/*-- scss:defaults --*/
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+
+$font-family-sans-serif: "Commissioner", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-family-monospace: "Commissioner", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+$web-font-path: "";
+
+$navbar-bg: teal;
+
+/*-- scss:rules --*/
+/* commissioner-regular - latin */
+@font-face {
+  font-family: "Commissioner";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./fonts/Commissioner-Light.woff2") format("woff2");
+}
+
+/* commissioner-italic - latin */
+@font-face {
+  font-family: "Commissioner";
+  font-style: italic;
+  font-weight: 400;
+  src: url("./fonts/Commissioner-LightItalic.woff2") format("woff2");
+}
+
+/* fraunces-regular - latin */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('./fonts/Fraunces9ptSoft-Thin.woff2') format('woff2');
+}
+
+/* fraunces-italic - latin */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 400;
+  src: local(''),
+       url('./fonts/Fraunces9ptSoft-ThinItalic.woff2')  format('woff2');
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  src: url('./webfonts/fa-solid-900.eot')
+  url('./webfonts/fa-solid-900.woff2') format('woff2'),
+  url('./webfonts/fa-solid-900.woff') format('woff'),
+  url('./webfonts/fa-solid-900.ttf') format('truetype');
+}
+
+/* Activities and chalenges box*/
+.alert-success {
+  padding-left: 4rem;
+  position: relative;
+}
+
+.alert-success::before {
+	content: "\f304";
+	font-family: 'font awesome 5 free';
+	font-weight: 900;
+	font-size: 1.25rem;
+	position: absolute;
+	top: 1rem;
+	left: 0;
+	width: 4rem;
+	text-align: center;
+}
+
+
+/* Side notes box*/
+.alert-info {
+  padding-left: 3.5rem;
+  position: relative;
+}
+
+
+.alert-info::before {
+	content: "\f0eb";
+	font-family: 'font awesome 5 free';
+	font-weight: 900;
+	font-size: 1.25rem;
+	position: absolute;
+	top: 1rem;
+	left: 0;
+	width: 4rem;
+	text-align: center;
+}
+
+
+/* Paths and instructions box*/
+.alert-primary {
+  padding-left: 3.5rem;
+  position: relative;
+}
+
+.alert-primary::before {
+	content: "\f0a4";
+	font-family: 'font awesome 5 free';
+	font-weight: 900;
+	font-size: 1.25rem;
+	position: absolute;
+	top: 1rem;
+	left: 0;
+	width: 4rem;
+	text-align: center;
+}
+
+.instructions ul,
+.instructions ol {
+  margin-left: -1rem;
+}
