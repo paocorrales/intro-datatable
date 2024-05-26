@@ -1,0 +1,42 @@
+---
+title: "Efficient data analysis with data.table"
+---
+
+## Welcome!
+
+data.table is one of the most efficient open-source in-memory data manipulation packages available today. It can summarise, compute new variables, re-arrange tables and perform group-wise operations quickly, and memory efficiently thanks to its highly optimised C code. It also provides fast alternatives to base R functions for reading and writing files.
+
+This three-hour tutorial will introduce participants to data.table's basics. Through live coding sessions and hands-on exercises, we will learn how to use data.table as part of a data analysis pipeline; from reading data into memory to writing the results back, including exploration, data manipulation and joins. The tutorial will also lay the foundations for learning more advanced features, such as special symbols and combined operations.
+
+::: {.alert .alert-success}
+
+**Describe what do you think are the contents of these files:**
+
+-   `data/raw/madrid_minimum-temperature.csv`
+
+-   `scripts/02_compute_mean-temperature.R`
+
+-   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
+:::
+
+::: {.alert .alert-info}
+
+**Describe what do you think are the contents of these files:**
+
+-   `data/raw/madrid_minimum-temperature.csv`
+
+-   `scripts/02_compute_mean-temperature.R`
+
+-   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
+:::
+
+::: {.alert .alert-primary}
+
+**Describe what do you think are the contents of these files:**
+
+-   `data/raw/madrid_minimum-temperature.csv`
+
+-   `scripts/02_compute_mean-temperature.R`
+
+-   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
+:::
