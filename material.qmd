@@ -1,0 +1,338 @@
+---
+title: "Introduction to data.table"
+editor: visual
+---
+
+data.table is an R package that provides an enhanced version of data.frames, which are the standard data structure for storing data in base R
+
+## Why data.table?
+
+* fast and efficient
+* no dependencies
+* concise
+* backwards compatibility
+
+efficient syntax (saves programming time)
+efficient C code implementation (saves time and memory)
+
+```{r}
+library(data.table)
+```
+
+## Reading data with data.table
+
+data.table comes with a function to read regular delimited files such as csv files. As you may imagine the f in `fread()` means *fast*, this is because the function detects automatically the delimiter, the class of each collumn and the number of rows in the file.
+
+```{r}
+rolling_stone <- fread('data/rolling_stone.csv')
+```
+
+The same way it is possible to read a file from a URL of compressed files with extensions `.gz` and `.bz2`.
+
+```{r, eval=FALSE}
+
+rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
+```
+
+But sometimes you'll have a data.frame or a tiblle. For those cases you can convert them to data.table with `setDT()` and the other way around with `setDF()`.
+
+```{r}
+setDT(rolling_stone)
+```
+
+### The Rolling Stone data
+
+The data we'll use comes from the [TidyTuesday project](https://github.com/rfordatascience/tidytuesday), includes album rankings from Rolling Stone magazine. It has [21 variables](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md#data-dictionary) and 691 observations, not a big task for data.table but it will help us to explore some of the funtionalities.
+
+```{r}
+str(rolling_stone)
+```
+
+## The sintax 
+
+The general form of the syntaxis looks like this:
+
+```{=html}
+<div  style=" margin-left: auto; margin-right: auto;display: block; text-align:center; width:fit-content;"> 
+<p style="font-size:250%;font-weight:bold" >
+<code>DT[<span class="rows">i</span>, <span class="columns">j</span>, <span class="by">by</span>]</code>
+</p>
+</div>
+```
+
+Where <code>**DT**</code> is a data.table object, the <code>[**i**]{.rows}</code> argument is used for filtering and joining operations, the <code>[**j**]{.columns}</code> argument can summarise and transform, and the <code>[**by**]{.by}</code> argument defines the groups to which to apply these operations.
+
+
+You can read the sintaxis as "On this rows, do this, grouped by that". It is very concise but easy to read (sometimes).
+
+Let's start operating over `i`, meaning over the rows of the table.
+
+## Subset rows in i
+
+Let's say we want the albun in the top 1 for 2003:
+
+```{r}
+rolling_stone[rank_2003 == 1]
+```
+Reasonably all logical operatoros will work for this. For example you may want to get all the female bands.
+
+```{r}
+rolling_stone[artist_gender == "Female" & artist_member_count > 1]
+```
+
+It is also possible to order de rows by any of the collumns.
+
+```{r}
+rolling_stone[order(rank_2003)]
+```
+
+
+::: {.alert .alert-success}
+**Filter some rows!**
+
+1. Is your favorite band/artist listed in the data?
+2. What was the their highest position in any year?
+
+You can choose any band if you don't have a favorite. 
+:::
+
+## Operating with column(s) in j
+
+With data.table you can't select a column by its numbered position in a table, you'll need to use it name. The following code returns a vector.
+
+```{r}
+rolling_stone[, sort_name]
+```
+
+Here the comma before `sort_name` is very importat as we operating on `j`. If you want to get a data.table instead of a vector or if you want to select more than one collumn you need to wrap the variables with `list()`:
+
+```{r}
+rolling_stone[, list(sort_name, rank_2003)]
+```
+
+There is an alias for `list()`, that most people uses `.()`. As is very concise we'll use it instead of `list()`. 
+
+::: {.alert .alert-success}
+**Selecting columns!**
+
+1. Can you get only the raking columns?
+
+:::
+
+We could also compute over j, as it can handle expressions. Let's say we want to know the mean  ranking for 2003:
+
+```{r}
+rolling_stone[, mean(rank_2003, na.rm = TRUE)]
+```
+
+Right now it don't make much since, the mean of the numbers 1 to 500 will be around 250. It is probably more interesting to calculate the raking mean by genre. While it is possible to filter the rows for one genre and calculate the mean:
+
+```{r}
+rolling_stone[genre == "Electronic", mean(rank_2003, na.rm = TRUE)]
+```
+
+It would be easier to group the rows by genre using `by`:
+
+```{r}
+rolling_stone[, mean(rank_2003, na.rm = TRUE), by = genre]
+```
+::: {.alert .alert-info}
+
+data.table is very eficient at subseting rows and doing calculations over collumns. For this expression:
+
+```r
+rolling_stone[genre == "Electronic", mean(rank_2003, na.rm = TRUE)]
+```
+1. Find the *row indices* that mach `genre == "Electronic"`. It does not subset over the entire table.
+2. As j uses only one column to compute the mean, data.table subset only that column and compute the mean.
+
+data.table can see all three components of the query (i, j and by) and optimise it altogether before evaluation, not each separately.
+
+:::
+
+You probably that there are repeated categories in the previous result, like "Blues/Blues Rock" and "Blues/Blues ROck". One of many ways to solve this will be to lower case all categories.
+
+```{r}
+rolling_stone[, genre := tolower(genre)]
+```
+
+This operator `:=` is call "walrus". It can be use to update existing columns (like what we just did) or to create new ones. It is possible also to delete columns with `DT[, variable := NULL]`. 
+
+All the `:=` operations are made by reference, so again, it is very efficient.
+
+
+::: {.alert .alert-success}
+
+**Your turn**
+
+1. How may times did the Latin genre appeared in the raking of 2020?
+2. What the average of the birth year for each artist or band?
+3. What is the mean raking of each album over the years?
+4. What is the average number of years since debut calculated by artist_gender?
+:::
+
+```{r}
+rolling_stone[, mean(years_between, na.rm = TRUE), by = artist_gender]
+```
+
+## Puting all together
+
+Up to now we made one operation at a time but it would be useful to chain operations (like you would do with dplyr for example). Let's say we want to order the mean 2003 raking by genre. 
+
+Tha *native* way to do it with data.table will looks like this:
+
+```{r}
+rolling_stone[, mean(rank_2003, na.rm = TRUE), by = genre][order(V1)]
+```
+Or like this for more readability:
+
+```r
+rolling_stone[, mean(rank_2003, na.rm = TRUE), by = genre
+][order(V1)]
+```
+
+There are [other possibilities, like using a pipe operator](https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/). You could use the old and wise magrittr pipe `%>%` along with `.` as a placeholder which, within a magrittr pipe, refers to the result of the previous step.
+
+```r
+rolling_stone[, mean(rank_2003, na.rm = TRUE), by = genre] %>%
+.[order(V1)]
+```
+
+::: {.alert .alert-info}
+
+It is very important to distinguish between the `.` as alias for `list()` an the `.` as a placeholder within the magrittr pipe.
+
+:::
+
+Using the native pipe `|>` before R 4.3.0 was more tricky as the pipe didn't have a placeholder. But since that R version the native pipe supports a `_` placeholder to the right-hand side fo the pipe:
+
+```r
+rolling_stone[, mean(rank_2003, na.rm = TRUE), by = genre] |>
+_[order(V1)]
+```
+Now you can chain operations using any of the options. We'll stick to the `|>` as is what we usually use. 
+
+While using `V1` is ok, a better practice will be naming the variables:
+
+```{r}
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] |> 
+_[order(mean_rank)]
+```
+
+
+As long as j-expression returns a list, each element of the list will be converted to a column in the resulting data.table. This makes j quite powerful, for example you can compute more than one summery:
+
+```{r}
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
+N = sum(!is.na(rank_2003))), by = genre] |> 
+_[order(mean_rank)]
+```
+
+It makes possible to use functions that return a list (or similarly a data.frame) as a summery function.
+
+Let's get serious about analyzing this data. It would be interesting to know the genre proportion for 2003 ranking.
+
+```{r}
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
+N = sum(!is.na(rank_2003))), by = genre] |> 
+_[, prop := N/sum(N)] |> 
+_[order(-prop)]
+```
+
+Now we know that the 25% of the raking in 2003 with 125 positions is associated to no genre. Having a empty label is not ideal, lest modify the variable. 
+
+```{r}
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
+N = sum(!is.na(rank_2003))), by = genre] |> 
+_[, let(prop = N/sum(N),
+genre = fifelse(genre == "", "Genre unknown", genre))] |> 
+_[order(-prop)] 
+
+```
+Let's us introduce you to the quoted walrus `":="`. This is a functional form of the walrus operator that allows you to operate over more that one column at the same time. It can be tiresome to write `":="` all the time, so you can also use the alias `let()`.
+
+Looking at number in a table is not always enough. Let's plot the results. 
+
+```{r}
+library(ggplot2) #Or any another package to make plots
+
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
+N = sum(!is.na(rank_2003))), by = genre] |> 
+_[, let(prop = N/sum(N),
+genre = fifelse(genre == "", "Genre unknown", genre))] |>  
+_[, genre := forcats::fct_reorder(genre, prop)] |> 
+ggplot(aes(prop, genre)) +
+geom_col()
+```
+
+That's right, you can pipe in a plot after doing the calculations.
+
+data.table has special symbols like `.N` that counts the number of rows in the group and it is particularly useful when used along with `by`.
+
+```{r}
+rolling_stone[!is.na(rank_2003)] |> 
+  _[, .N, by = release_year] |> 
+  _[, prop := N/sum(N)] |> 
+  ggplot(aes(release_year, prop)) +
+  geom_line()
+```
+
+Here we have the proportion of albums in the 2003 raking by year of release and interestingly, the majority of the albums in the raking of 2003 where release way back around 1970.
+
+We could do the same for each year.
+
+```{r}
+rolling_stone[, .(N_2003 = .N,
+                  N_2012 = .N,
+                  N_2020 = .N), by = release_year] |> 
+_[, let(prop_2003 = N_2003/sum(N_2003),
+prop_2012 = N_2012/sum(N_2012),
+prop_2020 = N_2020/sum(N_2020))] 
+```
+
+This is very tedious and it makes plotting the results more difficult. What we need to do here is reshape the table so we have one column with the ranking position and one with the corresponding year. So, lets *melt* the table.
+
+```{r}
+rolling_stone |> 
+  melt(id.vars = c("release_year", "album_id"), measure.vars = patterns("^rank"))
+```
+It is important to identify the key or id variables (`id.vars` argument) associated to the observation, the albums. In this case we have `release_year` and `album_id`. The measure variables (`measure.vars` argument) are the variables we want to reshape. We could name each of them or use pattern-based column marching using regular expressions and the `patterns()` function like here.
+
+By default, the new variables are `variable` and `value` but the can be changed using the `variable.name` and `value.name` arguments. 
+
+We can compute the album proportion again. But now we need to group by to variables: the year of release and the raking year. The `by` can also acept list so we'll use the `.()` alias.
+
+```{r}
+rolling_stone |> 
+  melt(id.vars = c("release_year", "album_id"), measure.vars = patterns("^rank")) |> 
+_[!is.na(value), .(.N), by = .(release_year, variable)] |> 
+_[, prop := N/sum(N)]
+```
+
+::: {.alert .alert-info}
+
+Explicar por que no aparece el resultado?
+
+:::
+
+Let's plot the results again.
+
+```{r}
+rolling_stone |> 
+  melt(id.vars = c("release_year", "album_id"), measure.vars = patterns("^rank")) |> 
+_[!is.na(value), .(.N), by = .(release_year, variable)] |> 
+_[, prop := N/sum(N)] |> 
+ ggplot(aes(release_year, prop)) +
+  geom_line(aes(color = variable))
+```
+
+It looks like the albums released around 1970 were and still are the most popular.
+
+::: {.alert .alert-success}
+**Your turn again!**
+
+1. Does this patter persist when looking into popularity in Spotify?
+2. How much time it takes to reach the 500 raking depending on the genre? 
+
+You can choose any band if you don't have a favorite. 
+:::
