@@ -8,9 +8,13 @@ data.table is one of the most efficient open-source in-memory data manipulation 
 
 This three-hour tutorial will introduce participants to data.table's basics. Through live coding sessions and hands-on exercises, we will learn how to use data.table as part of a data analysis pipeline; from reading data into memory to writing the results back, including exploration, data manipulation and joins. The tutorial will also lay the foundations for learning more advanced features, such as special symbols and combined operations.
 
+### License
+
+<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/deed.es_ES"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" alt="Creative Commons License" style="border-width:0"/></a><br /> All materials in this course are under the license <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/deed.es_ES">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+
 ::: {.alert .alert-success}
 
-**Describe what do you think are the contents of these files:**
+**Exersice**
 
 -   `data/raw/madrid_minimum-temperature.csv`
 
