@@ -2,8 +2,26 @@
 title: "About"
 ---
 
-About this site
+## ...data.table
 
-```{r}
-1 + 1
-```
+Comunidad
+
+
+## ...the tutorial
+
+This tutorial was developed to be presented at useR! 2024 thanks to a travel ward given to Pao. We hope to be able to share the recordings as soon as they are available. 
+
+
+## ...us
+
+**Pao Corrales**
+
+<img src="img/pao_circle.png" alt="Foto de Pao" width="100" height="100" align="left" style="margin:10px"/> Pao has a PhD from the University of Buenos Aires. She studied atmospheric sciences applying data assimilation techniques to improve short-term forecasts of severe events in Argentina. She is also a Trainer and instructor for The Carpentries and a professor at the Data Sciences degree and postgraduate courses at Guillermo Brown University. She is an active R user and developer and contributes to many communities of practice, such as R-Ladies and rOpenSci.
+
+More information about Pao: [paobcorrales.github.io](https://github.com/paocorrales)
+
+**Elio Campitelli**
+
+<img src="img/elio_cicle.png" alt="Foto de Elio" width="100" height="100" align="left" style="margin:10px"/> Elio has a PhD from the University of Buenos Aires in atmospheric sciences and is an active R package developer. They apply open science principles with a strong emphasis on reproducibility by publicly making all the code and data available. They's a founding member of the R User Group in Buenos Aires and part of LatinR and rOpenSci communities. They maintain several open-source R packages (e.g., ggnewscale; metR) and contribute to other packages, such as data.table and ggplot2.
+
+More informations about Elio: [eliocamp.github.io](https://eliocamp.github.io/)
