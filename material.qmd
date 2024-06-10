@@ -3,7 +3,10 @@ title: "Introduction to data.table"
 editor: visual
 ---
 
-data.table is an R package that provides an enhanced version of data.frames, which are the standard data structure for storing data in base R.
+## What data.table?
+
+At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
+It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining datasets and much more.
 
 ## Why data.table?
 
@@ -14,28 +17,62 @@ data.table is an R package that provides an enhanced version of data.frames, whi
 
 efficient syntax (saves programming time) efficient C code implementation (saves time and memory)
 
-```{r}
-library(data.table)
+## Reference semantics
+
+Most R functions and methods uses copy-on-modify.
+This means that modifying an object almost always creates a new copy of the object, while the original one is kept unmodified.
+For example this code
+
+```{r, eval=FALSE}
+my_data |> 
+  mutate(new_column = old_column*2)
 ```
+
+returns a new tibble that is a copy of `my_data`with a new column but it doesn't modify `my_data`.
+
+data.table uses modify-in-place, which means that objects are **not** copied with modified.
+This code
+
+```{r}
+my_data[, new_column := old_column*2]
+```
+
+doesn't create a new copy of `my_data` but it rather modifies `my_data` directly.
+This is similar to the base R code:
+
+```{r}
+my_data$new_column <- data$new_column
+```
+
+Modify-in-place is one of the features that makes data.table so efficient, but it can also make code harder to think about and lead to surprising results (especially if a data.table is modified inside a function).
+
+Functions that modify a data.table in place start with "set", like `setcolorder()` (reorders columns) or `setnames()` (renames columns).
 
 ## Reading data with data.table
 
-data.table comes with a function to read regular delimited files such as csv files.
-As you may imagine the f in `fread()` means *fast*, this is because the function detects automatically the delimiter, the class of each collumn and the number of rows in the file.
+The first step of most data analyses is to read data in memory.
+We can use the `data.table::fread()` function (the f is for *fast*) to read regular delimited files such as csv files.
+This function not only is fast, but it automatically detects the delimiter and guesses the class of each column and the number of rows in the file.
+
+```{r}
+library(data.table)
+```
 
 ```{r}
 rolling_stone <- fread('data/rolling_stone.csv')
 ```
 
-The same way it is possible to read a file from a URL of compressed files with extensions `.gz` and `.bz2`.
+It is also possible to read data from a URL.
 
 ```{r, eval=FALSE}
 
 rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
 ```
 
-But sometimes you'll have a data.frame or a tiblle.
-For those cases you can convert them to data.table with `setDT()` and the other way around with `setDF()`.
+`fread()` will return a data.table object.
+If you read a dataset as a data.frame or tibble and want to create it as a But sometimes you'll have a data.frame or a tibble that you loaded into R using other methods.
+You can convert them to data.table either with the `as.data.table()` or `setDT()` functions.
+The difference is that `as.data.table()` returns a copy of the data as a data.table and `setDT()` changes the data in place (as it is expected by the "set" prefix).
 
 ```{r}
 setDT(rolling_stone)
