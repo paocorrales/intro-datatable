@@ -2,14 +2,31 @@
 title: "About"
 ---
 
-## ...data.table
+## ...data.table 
 
-Comunidad
+<a href="https://r-datatable.com"><img src="https://raw.githubusercontent.com/Rdatatable/data.table/master/.graphics/logo.png" align="right" height="140" /></a>
+
+At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
+It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining data sets and much more.
+
+data.table mascot is a sea lion, which barks "R R R" 
+
+Take a quick look at it funtionalities:
+
+<a href="https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf"><img src="https://raw.githubusercontent.com/rstudio/cheatsheets/master/pngs/datatable.png" width="615" height="242"/></a>
+
+It is a great time to join the data.table community! In 2023-2025, National Science Foundation has provided funds to support expanding the ecosystem of users and contributors around data.table. You can start checking:
+
+
+* The Raft [rdatatable-community.github.io/The-Raft](https://rdatatable-community.github.io/The-Raft/), the data.table blog.
+Sea lions often float together on the ocean's surface in groups called "rafts".
+* The GitHub [repo](https://github.com/Rdatatable/data.table) with 900+ open issues, 100+ open PRs. 
+If you have any time/interest, we could use your help!
+
 
 ## ...the tutorial
 
-This tutorial was developed to be presented at useR!
-2024 thanks to a travel ward given to Pao.
+This tutorial was developed to be presented at useR! 2024 thanks to a travel award given to Pao.
 We hope to be able to share the recordings as soon as they are available.
 
 ## ...us
