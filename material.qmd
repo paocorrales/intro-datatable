@@ -34,9 +34,9 @@ my_data |>
   mutate(new_column = old_column*2)
 ```
 
-returns a new tibble that is a copy of `my_data`with a new column but it doesn't modify `my_data`.
+returns a new tibble that is a copy of `my_data` with a new column but it doesn't modify `my_data`.
 
-data.table uses modify-in-place, which means that objects are **not** copied with modified.
+data.table uses modify-in-place, which means that objects are **not** copied whene modified.
 This code
 
 ```{r, eval=FALSE}
@@ -144,10 +144,17 @@ rolling_stone[order(rank_2003)]
 **Filter some rows!**
 
 1.  Is your favourite band/artist listed in the data?
-2.  What was the their highest position in any year?
-
-You can choose any band if you don't have a favourite.
+2.  How many albums got first position the Billboard magazine ranking?
 :::
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show one solution"
+#| eval: false
+
+rolling_stone[clean_name == "your fav band here"]
+rolling_stone[peak_billboard_position == 1]
+```
 
 ## Operating with column(s) in [j]{.columns}
 
@@ -292,11 +299,19 @@ This makes it very efficient, but potentially surprising!
 #| code-fold: true
 #| code-summary: "Show one solution"
 #| eval: false
+
+# 1.  How may bands in the Latin genre appeared in the raking of 2020?
 rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
 
-# Faltan los otros
+# 2.  What the average of the birth year for each artist or band?
+rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
 
+# 3.  What is the mean raking of each album over the years?
+rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
+
+# 4.  What is the average number of years since debut calculated by artist_gender?
 rolling_stone[, mean(years_between, na.rm = TRUE), by = artist_gender]
+
 ```
 
 ## Putting it all together
@@ -368,9 +383,13 @@ For that we can use the `let()` function, which is like a functional form of the
 rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
                   N = sum(!is.na(rank_2003))), by = genre] |> 
   _[, let(prop = N/sum(N),
-          genre = ifelse(genre == "", "unknown genre", genre))] |> 
+          genre = fifelse(genre == "", "unknown genre", genre))] |> 
   _[order(-prop)] 
 ```
+
+::: {.alert .alert-info}
+You will probably find examples where a quoted walrus`":="` is used instead of the function `let()`. This is a functional form of the walrus operator that allows you to operate over more that one column at the same time. 
+:::
 
 Looking at numbers in a table is not always enough.
 Let's plot the results.
@@ -390,7 +409,32 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
 
 That's right, you can pipe in a plot after doing the calculations.
 
-EJERCICIO
+::: {.alert .alert-success}
+**Your turn**
+
+1.  Are bands more successful than solo artists?
+2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
+**AGREGAR MAS**
+:::
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show one solution"
+#| eval: false
+
+# 1.  Are bands more successful than solo artists?
+rolling_stone[, band := fifelse(artist_member_count == 1, "solo", "band")] |> 
+  _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+        mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+        mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), by = band]
+
+# 2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
+rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
+                  N = sum(!is.na(rank_2020))), by = type] |> 
+  _[, prop := N/sum(N)] 
+```
+
+
 
 ## Special symbols
 
@@ -419,7 +463,6 @@ Interestingly, the majority of the albums in the raking of 2003 where released b
 Was music better at that time?
 Or maybe this is a reflection of the people compiling the ranking.
 
-EJERCICIO
 
 ## Reshaping data
 
@@ -465,8 +508,8 @@ rolling_stone |>
 :::
 
 We can compute the album proportion again.
-But now we need to group by to variables: the year of release and the raking year.
-The `by` can also acept list so we'll use the `.()` alias.
+But now we need to group by two variables: the year of release and the raking year.
+The `by` can also accepts a list so we'll use the `.()` alias.
 
 ```{r}
 rolling_stone |> 
@@ -501,5 +544,16 @@ It looks like the albums released around 1970 were and still are the most popula
 1.  Does this patter persist when looking into popularity in Spotify?
 2.  How much time it takes to reach the 500 raking depending on the genre?
 
-You can choose any band if you don't have a favourite.
 :::
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show one solution"
+#| eval: false
+
+
+```
+
+- [] Revisar ejercicio de melt y solución
+- [] Agregar cajita de nota con dcast
+- [] Agregar .SD? Capaz correlación entre spotify y raking?
