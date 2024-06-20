@@ -1,0 +1,2882 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to data.table</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Introduction to data.table</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./material.html" aria-current="page"> 
+<span class="menu-text">Materials</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-data.table" id="toc-what-data.table" class="nav-link active" data-scroll-target="#what-data.table">What data.table?</a></li>
+  <li><a href="#why-data.table" id="toc-why-data.table" class="nav-link" data-scroll-target="#why-data.table">Why data.table?</a></li>
+  <li><a href="#reference-semantics" id="toc-reference-semantics" class="nav-link" data-scroll-target="#reference-semantics">Reference semantics</a></li>
+  <li><a href="#reading-data-with-data.table" id="toc-reading-data-with-data.table" class="nav-link" data-scroll-target="#reading-data-with-data.table">Reading data with data.table</a>
+  <ul class="collapse">
+  <li><a href="#the-rolling-stone-data" id="toc-the-rolling-stone-data" class="nav-link" data-scroll-target="#the-rolling-stone-data">The Rolling Stone data</a></li>
+  </ul></li>
+  <li><a href="#the-syntax" id="toc-the-syntax" class="nav-link" data-scroll-target="#the-syntax">The syntax</a></li>
+  <li><a href="#subset-rows-in-i" id="toc-subset-rows-in-i" class="nav-link" data-scroll-target="#subset-rows-in-i">Subset rows in <span class="rows">i</span></a></li>
+  <li><a href="#operating-with-columns-in-j" id="toc-operating-with-columns-in-j" class="nav-link" data-scroll-target="#operating-with-columns-in-j">Operating with column(s) in <span class="columns">j</span></a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting it all together</a></li>
+  <li><a href="#special-symbols" id="toc-special-symbols" class="nav-link" data-scroll-target="#special-symbols">Special symbols</a></li>
+  <li><a href="#reshaping-data" id="toc-reshaping-data" class="nav-link" data-scroll-target="#reshaping-data">Reshaping data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to data.table</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="what-data.table" class="level2">
+<h2 class="anchored" data-anchor-id="what-data.table">What data.table?</h2>
+<p>At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax. It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining datasets and much more.</p>
+</section>
+<section id="why-data.table" class="level2">
+<h2 class="anchored" data-anchor-id="why-data.table">Why data.table?</h2>
+<ul>
+<li>fast and efficient</li>
+<li>no dependencies</li>
+<li>concise</li>
+<li>backwards compatibility</li>
+</ul>
+<p>efficient syntax (saves programming time) efficient C code implementation (saves time and memory)</p>
+</section>
+<section id="reference-semantics" class="level2">
+<h2 class="anchored" data-anchor-id="reference-semantics">Reference semantics</h2>
+<p>Most R functions and methods uses copy-on-modify. This means that modifying an object almost always creates a new copy of the object, while the original one is kept unmodified. For example this code</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_data <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_column =</span> old_column<span class="sc">*</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>returns a new tibble that is a copy of <code>my_data</code> with a new column but it doesn’t modify <code>my_data</code>.</p>
+<p>data.table uses modify-in-place, which means that objects are <strong>not</strong> copied whene modified. This code</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_data[, new_column <span class="sc">:</span><span class="er">=</span> old_column<span class="sc">*</span><span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>doesn’t create a new copy of <code>my_data</code> but it rather modifies <code>my_data</code> directly. This is similar to the base R code:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>my_data<span class="sc">$</span>new_column <span class="ot">&lt;-</span> data<span class="sc">$</span>new_column</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Modify-in-place is one of the features that makes data.table so efficient, but it can also make code harder to think about and lead to surprising results (especially if a data.table is modified inside a function).</p>
+<p>Functions that modify a data.table in place start with “set”, like <code>setcolorder()</code> (reorders columns) or <code>setnames()</code> (renames columns).</p>
+</section>
+<section id="reading-data-with-data.table" class="level2">
+<h2 class="anchored" data-anchor-id="reading-data-with-data.table">Reading data with data.table</h2>
+<p>The first step of most data analyses is to read data in memory. We can use the <code>data.table::fread()</code> function (the f is for <em>fast</em>) to read regular delimited files such as csv files. This function not only is fast, but it automatically detects the delimiter and guesses the class of each column and the number of rows in the file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'data/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>It is also possible to read data from a URL.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>fread()</code> will return a data.table object. If you read a dataset as a data.frame or tibble and want to create it as a But sometimes you’ll have a data.frame or a tibble that you loaded into R using other methods. You can convert them to data.table either with the <code>as.data.table()</code> or <code>setDT()</code> functions. The difference is that <code>as.data.table()</code> returns a copy of the data as a data.table and <code>setDT()</code> changes the data in place (as it is expected by the “set” prefix).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setDT</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="the-rolling-stone-data" class="level3">
+<h3 class="anchored" data-anchor-id="the-rolling-stone-data">The Rolling Stone data</h3>
+<p>The data we’ll use comes from the <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday project</a>, includes album rankings from Rolling Stone magazine. It has <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md#data-dictionary">21 variables</a> and 691 observations, not a big task for data.table but it will help us to explore some of the funtionalities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes 'data.table' and 'data.frame':  691 obs. of  21 variables:
+ $ sort_name               : chr  "Sinatra, Frank" "Diddley, Bo" "Presley, Elvis" "Sinatra, Frank" ...
+ $ clean_name              : chr  "Frank Sinatra" "Bo Diddley" "Elvis Presley" "Frank Sinatra" ...
+ $ album                   : chr  "In the Wee Small Hours" "Bo Diddley / Go Bo Diddley" "Elvis Presley" "Songs for Swingin' Lovers!" ...
+ $ rank_2003               : int  100 214 55 306 50 NA NA 421 NA 12 ...
+ $ rank_2012               : int  101 216 56 308 50 NA 451 420 NA 12 ...
+ $ rank_2020               : int  282 455 332 NA 227 32 33 NA 68 31 ...
+ $ differential            : int  -182 -241 -277 -195 -177 469 468 -80 433 -19 ...
+ $ release_year            : int  1955 1955 1956 1956 1957 2016 2006 1957 1985 1959 ...
+ $ genre                   : chr  "Big Band/Jazz" "Rock n' Roll/Rhythm &amp; Blues" "Rock n' Roll/Rhythm &amp; Blues" "Big Band/Jazz" ...
+ $ type                    : chr  "Studio" "Studio" "Studio" "Studio" ...
+ $ weeks_on_billboard      : int  14 NA 100 NA 5 87 173 NA 27 NA ...
+ $ peak_billboard_position : int  2 201 1 2 13 1 2 201 30 201 ...
+ $ spotify_popularity      : int  48 50 58 62 64 73 67 47 75 52 ...
+ $ spotify_url             : chr  "spotify:album:3GmwKB1tgPZgXeRJZSm9WX" "spotify:album:1cbtDEwxCjMhglb49OgNBR" "spotify:album:7GXP5OhYyPVLmcVfO9Iqin" "spotify:album:4kca7vXd1Wo5GE2DMafvMc" ...
+ $ artist_member_count     : int  1 1 1 1 1 1 1 4 1 1 ...
+ $ artist_gender           : chr  "Male" "Male" "Male" "Male" ...
+ $ artist_birth_year_sum   : int  1915 1928 1935 1915 1932 1981 1983 7752 1958 1926 ...
+ $ debut_album_release_year: int  1946 1955 1956 1946 1957 2003 2003 1957 1978 1951 ...
+ $ ave_age_at_top_500      : num  40 27 21 41 25 35 23 19 27 33 ...
+ $ years_between           : int  9 0 0 10 0 13 3 0 7 8 ...
+ $ album_id                : chr  "3GmwKB1tgPZgXeRJZSm9WX" "1cbtDEwxCjMhglb49OgNBR" "7GXP5OhYyPVLmcVfO9Iqin" "4kca7vXd1Wo5GE2DMafvMc" ...
+ - attr(*, ".internal.selfref")=&lt;externalptr&gt; </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="the-syntax" class="level2">
+<h2 class="anchored" data-anchor-id="the-syntax">The syntax</h2>
+<p>The general data.table syntax looks like this:</p>
+<div style=" margin-left: auto; margin-right: auto;display: block; text-align:center; width:fit-content;"> 
+<p style="font-size:250%;font-weight:bold">
+<code>DT[<span class="rows">i</span>, <span class="columns">j</span>, <span class="by">by</span>]</code>
+</p>
+</div>
+<p>Where <code><strong>DT</strong></code> is a data.table object, the <code class="rows"><span class="rows"><strong>i</strong></span></code> argument is used for filtering and joining operations, the <code class="columns"><span class="columns"><strong>j</strong></span></code> argument can summarise and transform, and the <code class="by"><span class="by"><strong>by</strong></span></code> argument defines the groups to which to apply these operations.</p>
+<p>You can read the syntax as “In these rows, do this, grouped by that”. It is very concise but easy to read (sometimes).</p>
+<p>Let’s start operating over <code>i</code>, meaning over the rows of the table.</p>
+</section>
+<section id="subset-rows-in-i" class="level2">
+<h2 class="anchored" data-anchor-id="subset-rows-in-i">Subset rows in <span class="rows">i</span></h2>
+<p>Which is the number one album in the 2003 ranking? We need to filter our dataset to show only rows where <code>rank_2003</code> is 1:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sort_name</th>
+<th style="text-align: left;">clean_name</th>
+<th style="text-align: left;">album</th>
+<th style="text-align: right;">rank_2003</th>
+<th style="text-align: right;">rank_2012</th>
+<th style="text-align: right;">rank_2020</th>
+<th style="text-align: right;">differential</th>
+<th style="text-align: right;">release_year</th>
+<th style="text-align: left;">genre</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">weeks_on_billboard</th>
+<th style="text-align: right;">peak_billboard_position</th>
+<th style="text-align: right;">spotify_popularity</th>
+<th style="text-align: left;">spotify_url</th>
+<th style="text-align: right;">artist_member_count</th>
+<th style="text-align: left;">artist_gender</th>
+<th style="text-align: right;">artist_birth_year_sum</th>
+<th style="text-align: right;">debut_album_release_year</th>
+<th style="text-align: right;">ave_age_at_top_500</th>
+<th style="text-align: right;">years_between</th>
+<th style="text-align: left;">album_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Beatles</td>
+<td style="text-align: left;">The Beatles</td>
+<td style="text-align: left;">Sgt.&nbsp;Pepper’s Lonely Hearts Club Band</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">-23</td>
+<td style="text-align: right;">1967</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">233</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">spotify:album:6QaVfG1pHYl1z15ZxkvVDW</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: right;">7765</td>
+<td style="text-align: right;">1963</td>
+<td style="text-align: right;">25.75</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">6QaVfG1pHYl1z15ZxkvVDW</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This is similar to how we’d use a regular data.frame:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rolling_stone<span class="sc">$</span>rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sort_name</th>
+<th style="text-align: left;">clean_name</th>
+<th style="text-align: left;">album</th>
+<th style="text-align: right;">rank_2003</th>
+<th style="text-align: right;">rank_2012</th>
+<th style="text-align: right;">rank_2020</th>
+<th style="text-align: right;">differential</th>
+<th style="text-align: right;">release_year</th>
+<th style="text-align: left;">genre</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">weeks_on_billboard</th>
+<th style="text-align: right;">peak_billboard_position</th>
+<th style="text-align: right;">spotify_popularity</th>
+<th style="text-align: left;">spotify_url</th>
+<th style="text-align: right;">artist_member_count</th>
+<th style="text-align: left;">artist_gender</th>
+<th style="text-align: right;">artist_birth_year_sum</th>
+<th style="text-align: right;">debut_album_release_year</th>
+<th style="text-align: right;">ave_age_at_top_500</th>
+<th style="text-align: right;">years_between</th>
+<th style="text-align: left;">album_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Beatles</td>
+<td style="text-align: left;">The Beatles</td>
+<td style="text-align: left;">Sgt.&nbsp;Pepper’s Lonely Hearts Club Band</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">-23</td>
+<td style="text-align: right;">1967</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">233</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">spotify:album:6QaVfG1pHYl1z15ZxkvVDW</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: right;">7765</td>
+<td style="text-align: right;">1963</td>
+<td style="text-align: right;">25.75</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">6QaVfG1pHYl1z15ZxkvVDW</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>But because all expressions in <code class="rows"><span class="rows">i</span></code> are evaluated in the context of the data.table, we don’t need to type the name of the data.frame again. This becomes even more convenient with longer expressions. For example, what are the female bands with more than 3 members?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[artist_gender <span class="sc">==</span> <span class="st">"Female"</span> <span class="sc">&amp;</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sort_name</th>
+<th style="text-align: left;">clean_name</th>
+<th style="text-align: left;">album</th>
+<th style="text-align: right;">rank_2003</th>
+<th style="text-align: right;">rank_2012</th>
+<th style="text-align: right;">rank_2020</th>
+<th style="text-align: right;">differential</th>
+<th style="text-align: right;">release_year</th>
+<th style="text-align: left;">genre</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">weeks_on_billboard</th>
+<th style="text-align: right;">peak_billboard_position</th>
+<th style="text-align: right;">spotify_popularity</th>
+<th style="text-align: left;">spotify_url</th>
+<th style="text-align: right;">artist_member_count</th>
+<th style="text-align: left;">artist_gender</th>
+<th style="text-align: right;">artist_birth_year_sum</th>
+<th style="text-align: right;">debut_album_release_year</th>
+<th style="text-align: right;">ave_age_at_top_500</th>
+<th style="text-align: right;">years_between</th>
+<th style="text-align: left;">album_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Destiny’s Child</td>
+<td style="text-align: left;">Destiny’s Child</td>
+<td style="text-align: left;">The Writing’s On the Wall</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">291</td>
+<td style="text-align: right;">210</td>
+<td style="text-align: right;">1999</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: left;">spotify:album:283NWqNsCA9GwVHrJk59CG</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: right;">7924</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">18.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">283NWqNsCA9GwVHrJk59CG</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Raincoats</td>
+<td style="text-align: left;">The Raincoats</td>
+<td style="text-align: left;">The Raincoats</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">398</td>
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">1979</td>
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: left;">spotify:album:190Tx9jPHndq0qUlq79BJJ</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: right;">7814</td>
+<td style="text-align: right;">1979</td>
+<td style="text-align: right;">25.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">190Tx9jPHndq0qUlq79BJJ</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Go Gos</td>
+<td style="text-align: left;">The Go-Go’s</td>
+<td style="text-align: left;">Beauty and the Beat</td>
+<td style="text-align: right;">413</td>
+<td style="text-align: right;">414</td>
+<td style="text-align: right;">400</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">1981</td>
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: left;">spotify:album:1L4HE00En7eNK74voVZums</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: right;">9785</td>
+<td style="text-align: right;">1981</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">1L4HE00En7eNK74voVZums</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ross, Diana &amp; the Supremes</td>
+<td style="text-align: left;">The Supremes</td>
+<td style="text-align: left;">Anthology</td>
+<td style="text-align: right;">431</td>
+<td style="text-align: right;">423</td>
+<td style="text-align: right;">452</td>
+<td style="text-align: right;">-21</td>
+<td style="text-align: right;">2001</td>
+<td style="text-align: left;">Soul/Gospel/R&amp;B</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">201</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Female</td>
+<td style="text-align: right;">9713</td>
+<td style="text-align: right;">1962</td>
+<td style="text-align: right;">58.4</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: left;">NOS121</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It is also possible to order de rows by any of the columns (we hide the output because it’s too long).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="fu">order</span>(rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="alert alert-success">
+<p><strong>Filter some rows!</strong></p>
+<ol type="1">
+<li>Is your favourite band/artist listed in the data?</li>
+<li>How many albums got first position the Billboard magazine ranking?</li>
+</ol>
+</div>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[clean_name <span class="sc">==</span> <span class="st">"your fav band here"</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>rolling_stone[peak_billboard_position <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="operating-with-columns-in-j" class="level2">
+<h2 class="anchored" data-anchor-id="operating-with-columns-in-j">Operating with column(s) in <span class="columns">j</span></h2>
+<p>Filtering and ordering is fun an all, but we need to operate on the columns. Just for fun, what is the mean ranking in 2003?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 250.504</code></pre>
+</div>
+</div>
+<div class="alert alert-info">
+<p><strong>Data.table is not type-stable</strong></p>
+<p>Notice that the result of the last expression is a single numeric vector and <em>not</em> a data.table. Operations in <span class="columns">j</span> will return a data.table if the result of the expression is a list or a data.table, and other objects if the result is a single object of a different type.</p>
+</div>
+<p>Now, the mean of the numbers 1 through 500 is 250.5, so this results tells us that something strange is going on. Some ranking seems to be missing. How many unique elements do we have? The <code>uniqueN()</code> function is from data.table and is a more efficient version of doing <code>length(unique(rank_2003))</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">uniqueN</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 498</code></pre>
+</div>
+</div>
+<p>Huh. We seem to be missing two ranking2?</p>
+<div class="alert alert-success">
+<p><strong>Your turn</strong></p>
+<ol type="1">
+<li><p>Which rankings are missing in the database?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">which</span>(<span class="sc">!</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">500</span> <span class="sc">%in%</span> rank_2003))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</div>
+<p>It’s probably more interesting to calculate the mean rank by genre. Let’s first compute the mean of just one genre.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 376.4286</code></pre>
+</div>
+</div>
+<div class="alert alert-info">
+<p>data.table is very efficient at subsetting rows and doing calculations over columns. For this expression:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>data.table:</p>
+<ol type="1">
+<li>find the <em>row indices</em> that match <code>genre == "Electronic"</code>. It does not subset over the entire table.</li>
+<li>as j uses only one column to compute the mean, data.table subsets only that column and compute the mean.</li>
+</ol>
+<p>data.table can see all three components of the query (i, j and by) and optimise it altogether before evaluation, not each separately.</p>
+</div>
+<p>There are a lot of genres so it would’t be too convenient to write one line for each one. It’s much better to group rows by genre using <span class="by"><code>by</code></span>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">V1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Big Band/Jazz</td>
+<td style="text-align: right;">197.4000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rock n’ Roll/Rhythm &amp; Blues</td>
+<td style="text-align: right;">169.3000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Soul/Gospel/R&amp;B</td>
+<td style="text-align: right;">226.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hip-Hop/Rap</td>
+<td style="text-align: right;">297.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Blues/Blues Rock</td>
+<td style="text-align: right;">233.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Country/Folk/Country Rock/Folk Rock</td>
+<td style="text-align: right;">207.3611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indie/Alternative Rock</td>
+<td style="text-align: right;">299.9143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: right;">293.1690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Electronic</td>
+<td style="text-align: right;">376.4286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Funk/Disco</td>
+<td style="text-align: right;">185.7333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Latin</td>
+<td style="text-align: right;">260.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hard Rock/Metal</td>
+<td style="text-align: right;">246.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Singer-Songwriter/Heartland Rock</td>
+<td style="text-align: right;">275.9231</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Blues/Blues ROck</td>
+<td style="text-align: right;">122.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reggae</td>
+<td style="text-align: right;">190.8571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afrobeat</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When doing stuff with <span class="by">by</span>, the result is always a data.table with the columns used to define the groups and columns to store the results. If we don’t give it any names, data.table assigns the defaults <code>V1</code>, <code>V2</code>, etc. This is fine for quick one-liners, but for regular code it’s much better to name the results. We do this by returning a named list:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">list</span>(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Big Band/Jazz</td>
+<td style="text-align: right;">197.4000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rock n’ Roll/Rhythm &amp; Blues</td>
+<td style="text-align: right;">169.3000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Soul/Gospel/R&amp;B</td>
+<td style="text-align: right;">226.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hip-Hop/Rap</td>
+<td style="text-align: right;">297.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Blues/Blues Rock</td>
+<td style="text-align: right;">233.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Country/Folk/Country Rock/Folk Rock</td>
+<td style="text-align: right;">207.3611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indie/Alternative Rock</td>
+<td style="text-align: right;">299.9143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: right;">293.1690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Electronic</td>
+<td style="text-align: right;">376.4286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Funk/Disco</td>
+<td style="text-align: right;">185.7333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Latin</td>
+<td style="text-align: right;">260.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hard Rock/Metal</td>
+<td style="text-align: right;">246.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Singer-Songwriter/Heartland Rock</td>
+<td style="text-align: right;">275.9231</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Blues/Blues ROck</td>
+<td style="text-align: right;">122.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reggae</td>
+<td style="text-align: right;">190.8571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afrobeat</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This idiom is so common that data.table allows us to use <code>.</code> as an alias for <code>list</code>, so most of the time you’d see something like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Big Band/Jazz</td>
+<td style="text-align: right;">197.4000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rock n’ Roll/Rhythm &amp; Blues</td>
+<td style="text-align: right;">169.3000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Soul/Gospel/R&amp;B</td>
+<td style="text-align: right;">226.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hip-Hop/Rap</td>
+<td style="text-align: right;">297.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Blues/Blues Rock</td>
+<td style="text-align: right;">233.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Country/Folk/Country Rock/Folk Rock</td>
+<td style="text-align: right;">207.3611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indie/Alternative Rock</td>
+<td style="text-align: right;">299.9143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: right;">293.1690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Electronic</td>
+<td style="text-align: right;">376.4286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Funk/Disco</td>
+<td style="text-align: right;">185.7333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Latin</td>
+<td style="text-align: right;">260.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hard Rock/Metal</td>
+<td style="text-align: right;">246.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Singer-Songwriter/Heartland Rock</td>
+<td style="text-align: right;">275.9231</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Blues/Blues ROck</td>
+<td style="text-align: right;">122.0000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reggae</td>
+<td style="text-align: right;">190.8571</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afrobeat</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>As long as <span class="columns">j</span>-expression returns a list, each element of the list will be converted to a column in the resulting data.table. This allows us to return more than one summary expression. What is the mean rank and number of bands included in the rank per genre?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>              by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+<th style="text-align: right;">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Big Band/Jazz</td>
+<td style="text-align: right;">197.4000</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rock n’ Roll/Rhythm &amp; Blues</td>
+<td style="text-align: right;">169.3000</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+<td style="text-align: right;">125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Soul/Gospel/R&amp;B</td>
+<td style="text-align: right;">226.2667</td>
+<td style="text-align: right;">45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hip-Hop/Rap</td>
+<td style="text-align: right;">297.5000</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Blues/Blues Rock</td>
+<td style="text-align: right;">233.2667</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Country/Folk/Country Rock/Folk Rock</td>
+<td style="text-align: right;">207.3611</td>
+<td style="text-align: right;">36</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indie/Alternative Rock</td>
+<td style="text-align: right;">299.9143</td>
+<td style="text-align: right;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Punk/Post-Punk/New Wave/Power Pop</td>
+<td style="text-align: right;">293.1690</td>
+<td style="text-align: right;">71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Electronic</td>
+<td style="text-align: right;">376.4286</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Funk/Disco</td>
+<td style="text-align: right;">185.7333</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Latin</td>
+<td style="text-align: right;">260.0000</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hard Rock/Metal</td>
+<td style="text-align: right;">246.2400</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Singer-Songwriter/Heartland Rock</td>
+<td style="text-align: right;">275.9231</td>
+<td style="text-align: right;">26</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Blues/Blues ROck</td>
+<td style="text-align: right;">122.0000</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reggae</td>
+<td style="text-align: right;">190.8571</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Afrobeat</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Some of the genres are relatively highly rated, but have very few examples included.</p>
+<div class="alert alert-info">
+<p>You can select only some columns using the same syntax but without applying any summary function. To return a data.table with just the columns <code>sort_name</code> and <code>rank_2003</code> you’d do:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(sort_name, rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>You might’ve noticed that “Blues/Blues Rock” also appears as “Blues/Blues ROck”. Someone made a typo! We need to modify the genre column to fix that mistake. One way would be to turn all genres to all lower case and forget about cases altogether.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">tolower</span>(genre)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This operator <code>:=</code> is called “walrus”. It can be used to update existing columns (like we just did) or to create new ones. It is possible also to delete columns with <code>DT[, variable := NULL]</code>.</p>
+<p>Notice that we didn’t get any output and we didn’t assigned the result. But <code>rolling_stone</code> is modified anyway:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">big band/jazz</td>
+<td style="text-align: right;">197.4000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rock n’ roll/rhythm &amp; blues</td>
+<td style="text-align: right;">169.3000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">soul/gospel/r&amp;b</td>
+<td style="text-align: right;">226.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hip-hop/rap</td>
+<td style="text-align: right;">297.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">blues/blues rock</td>
+<td style="text-align: right;">231.4426</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country/folk/country rock/folk rock</td>
+<td style="text-align: right;">207.3611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">indie/alternative rock</td>
+<td style="text-align: right;">299.9143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">punk/post-punk/new wave/power pop</td>
+<td style="text-align: right;">293.1690</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">electronic</td>
+<td style="text-align: right;">376.4286</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">funk/disco</td>
+<td style="text-align: right;">185.7333</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">latin</td>
+<td style="text-align: right;">260.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard rock/metal</td>
+<td style="text-align: right;">246.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">singer-songwriter/heartland rock</td>
+<td style="text-align: right;">275.9231</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">reggae</td>
+<td style="text-align: right;">190.8571</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">afrobeat</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The <code>:=</code> operator modifies columns by reference, so the <code>rolling_stone</code> variable is modified in place instead of making a copy. This makes it very efficient, but potentially surprising!</p>
+<div class="alert alert-success">
+<p><strong>Your turn</strong></p>
+<ol type="1">
+<li><p>How may bands in the Latin genre appeared in the raking of 2020?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"latin"</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>What the average of the birth year for each artist or band?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, artist_birth_year_mean <span class="sc">:</span><span class="er">=</span> artist_birth_year_sum<span class="sc">/</span>artist_member_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>What is the mean raking of each album over the years?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, mean_raking <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(rank_2003, rank_2012, rank_2020), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> album_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</div>
+</section>
+<section id="putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together">Putting it all together</h2>
+<p>Up to now we made one operation at a time but it would be useful to chain operations (like you would do with dplyr for example). Let’s say we want to order genres by their mean ranking in 2003.</p>
+<p>We can chain operations with data.table by continuing to use <code>[</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">rock n’ roll/rhythm &amp; blues</td>
+<td style="text-align: right;">169.3000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">funk/disco</td>
+<td style="text-align: right;">185.7333</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">reggae</td>
+<td style="text-align: right;">190.8571</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">big band/jazz</td>
+<td style="text-align: right;">197.4000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country/folk/country rock/folk rock</td>
+<td style="text-align: right;">207.3611</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">soul/gospel/r&amp;b</td>
+<td style="text-align: right;">226.2667</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blues/blues rock</td>
+<td style="text-align: right;">231.4426</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard rock/metal</td>
+<td style="text-align: right;">246.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">latin</td>
+<td style="text-align: right;">260.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">singer-songwriter/heartland rock</td>
+<td style="text-align: right;">275.9231</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">punk/post-punk/new wave/power pop</td>
+<td style="text-align: right;">293.1690</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hip-hop/rap</td>
+<td style="text-align: right;">297.5000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">indie/alternative rock</td>
+<td style="text-align: right;">299.9143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">electronic</td>
+<td style="text-align: right;">376.4286</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">afrobeat</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Or like this for better readability:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are <a href="https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/">other possibilities, like using a pipe operator</a>. You could use the old and wise magrittr pipe <code>%&gt;%</code> along with <code>.</code> as a placeholder which, within a magrittr pipe, refers to the result of the previous step.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>.[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="alert alert-info">
+<p>It is very important to distinguish between the <code>.</code> as alias for <code>list()</code> an the <code>.</code> as a placeholder within the magrittr pipe.</p>
+</div>
+<p>Using the native pipe <code>|&gt;</code> before R 4.3.0 was more tricky as the pipe didn’t have a placeholder. But since that R version the native pipe supports a <code>_</code> placeholder to the right-hand side fo the pipe:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>_[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now you can chain operations using any of the options. We’ll stick to the <code>|&gt;</code> as is what we usually use.</p>
+<p>Let’s get serious about analysing this data. It would be interesting to add the proportion as well as the number of albums in each genre:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+<th style="text-align: right;">N</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: right;">243.4080</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">punk/post-punk/new wave/power pop</td>
+<td style="text-align: right;">293.1690</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">0.142</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blues/blues rock</td>
+<td style="text-align: right;">231.4426</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">0.122</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">soul/gospel/r&amp;b</td>
+<td style="text-align: right;">226.2667</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">0.090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country/folk/country rock/folk rock</td>
+<td style="text-align: right;">207.3611</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">indie/alternative rock</td>
+<td style="text-align: right;">299.9143</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.070</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hip-hop/rap</td>
+<td style="text-align: right;">297.5000</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">singer-songwriter/heartland rock</td>
+<td style="text-align: right;">275.9231</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard rock/metal</td>
+<td style="text-align: right;">246.2400</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">funk/disco</td>
+<td style="text-align: right;">185.7333</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">big band/jazz</td>
+<td style="text-align: right;">197.4000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rock n’ roll/rhythm &amp; blues</td>
+<td style="text-align: right;">169.3000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">electronic</td>
+<td style="text-align: right;">376.4286</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reggae</td>
+<td style="text-align: right;">190.8571</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">latin</td>
+<td style="text-align: right;">260.0000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">afrobeat</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A full 25% of bands (125) in the 2003 ranking have no assigned genre. Having a empty label is not ideal, let’s modify the variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre)] <span class="sc">|&gt;</span> </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+<th style="text-align: right;">N</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">unknown genre</td>
+<td style="text-align: right;">243.4080</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">punk/post-punk/new wave/power pop</td>
+<td style="text-align: right;">293.1690</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">0.142</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blues/blues rock</td>
+<td style="text-align: right;">231.4426</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">0.122</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">soul/gospel/r&amp;b</td>
+<td style="text-align: right;">226.2667</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">0.090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country/folk/country rock/folk rock</td>
+<td style="text-align: right;">207.3611</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">indie/alternative rock</td>
+<td style="text-align: right;">299.9143</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.070</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hip-hop/rap</td>
+<td style="text-align: right;">297.5000</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">singer-songwriter/heartland rock</td>
+<td style="text-align: right;">275.9231</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard rock/metal</td>
+<td style="text-align: right;">246.2400</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">funk/disco</td>
+<td style="text-align: right;">185.7333</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">big band/jazz</td>
+<td style="text-align: right;">197.4000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rock n’ roll/rhythm &amp; blues</td>
+<td style="text-align: right;">169.3000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">electronic</td>
+<td style="text-align: right;">376.4286</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reggae</td>
+<td style="text-align: right;">190.8571</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">latin</td>
+<td style="text-align: right;">260.0000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">afrobeat</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When doing lot’s of column modifications like in the previous lines, it’s more convenient (and sometimes more efficient) to do all the modifications in a single step. For that we can use the <code>let()</code> function, which is like a functional form of the walrus operator that can assign multiple columns at once:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">fifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre</th>
+<th style="text-align: right;">mean_rank</th>
+<th style="text-align: right;">N</th>
+<th style="text-align: right;">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">unknown genre</td>
+<td style="text-align: right;">243.4080</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">punk/post-punk/new wave/power pop</td>
+<td style="text-align: right;">293.1690</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: right;">0.142</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blues/blues rock</td>
+<td style="text-align: right;">231.4426</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">0.122</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">soul/gospel/r&amp;b</td>
+<td style="text-align: right;">226.2667</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: right;">0.090</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country/folk/country rock/folk rock</td>
+<td style="text-align: right;">207.3611</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0.072</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">indie/alternative rock</td>
+<td style="text-align: right;">299.9143</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.070</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hip-hop/rap</td>
+<td style="text-align: right;">297.5000</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">singer-songwriter/heartland rock</td>
+<td style="text-align: right;">275.9231</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hard rock/metal</td>
+<td style="text-align: right;">246.2400</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0.050</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">funk/disco</td>
+<td style="text-align: right;">185.7333</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">big band/jazz</td>
+<td style="text-align: right;">197.4000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rock n’ roll/rhythm &amp; blues</td>
+<td style="text-align: right;">169.3000</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">electronic</td>
+<td style="text-align: right;">376.4286</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reggae</td>
+<td style="text-align: right;">190.8571</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.014</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">latin</td>
+<td style="text-align: right;">260.0000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">afrobeat</td>
+<td style="text-align: right;">NaN</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="alert alert-info">
+<p>You will probably find examples where a quoted walrus<code>":="</code> is used instead of the function <code>let()</code>. This is a functional form of the walrus operator that allows you to operate over more that one column at the same time.</p>
+</div>
+<p>Looking at numbers in a table is not always enough. Let’s plot the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#Or any another package to make plots</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] <span class="sc">|&gt;</span> </span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> forcats<span class="sc">::</span><span class="fu">fct_reorder</span>(genre, prop)] <span class="sc">|&gt;</span> </span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(prop, genre)) <span class="sc">+</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="material_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>That’s right, you can pipe in a plot after doing the calculations.</p>
+<div class="alert alert-success">
+<p><strong>Your turn</strong></p>
+<ol type="1">
+<li><p>Are bands more successful than solo artists?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, is_band <span class="sc">:</span><span class="er">=</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> is_band]</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Notice that due to reference semantics, this operation adds the </span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co"># is_band column to the data.table. You can avoid this by using </span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="co"># an expression in the by argument.</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">is_band =</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>What is the proportion of albums recorded in a Studio and their mean position in 2020?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> type] <span class="sc">|&gt;</span> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column <code>years_between</code> ) for each genre?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_years =</span> <span class="fu">mean</span>(years_between, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), .N),</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(mean_years)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</div>
+</section>
+<section id="special-symbols" class="level2">
+<h2 class="anchored" data-anchor-id="special-symbols">Special symbols</h2>
+<p>data.table has special symbols that provide extra functionality. We are going to only mention <code>.N</code> , which counts the number of rows in the group and it is particularly useful when used along with <code>by</code>.</p>
+<p>How many albums per year were included in the 2003 ranking? To answer this question we can first filter only albums that were included in the 2003 ranking and then count the number of rows per <code>release_year</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">release_year</th>
+<th style="text-align: right;">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1955</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1956</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1957</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1959</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1961</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1962</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1963</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1964</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1965</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1966</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1967</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1968</td>
+<td style="text-align: right;">21</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1969</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">29</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1971</td>
+<td style="text-align: right;">21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1972</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1973</td>
+<td style="text-align: right;">23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1974</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1975</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1976</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1977</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1978</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1979</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1981</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1982</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1983</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1984</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1985</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1986</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1987</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1988</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1989</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1991</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1992</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1993</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1994</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1995</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1996</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1997</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1999</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2002</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2003</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When using the <code>.N</code> symbol, the name of the result is automatically named “N”. Let’s plot that:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="material_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Interestingly, the majority of the albums in the raking of 2003 where released between the mid 60s and late 70s. Was music better at that time? Or maybe this is a reflection of the people compiling the ranking.</p>
+</section>
+<section id="reshaping-data" class="level2">
+<h2 class="anchored" data-anchor-id="reshaping-data">Reshaping data</h2>
+<p>Do all rankings have the same album make-up in terms of year of release? We can count the number of non-NA values for each ranking by release year:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">N_2003 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)),</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2012 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2012)),</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2020 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">release_year</th>
+<th style="text-align: right;">N_2003</th>
+<th style="text-align: right;">N_2012</th>
+<th style="text-align: right;">N_2020</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1955</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1956</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1957</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1985</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This is very tedious, error-prone and makes plotting the results more difficult. Every time you are applying the same operation to multiple columns it is very likely that you’d be better off reshaping your data. In this case, we would like to have a single column with the ranking position and another column that identifies which year’s ranking it is. So, lets <em>melt</em> the table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">release_year</th>
+<th style="text-align: left;">album_id</th>
+<th style="text-align: left;">rank_year</th>
+<th style="text-align: right;">rank</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1955</td>
+<td style="text-align: left;">3GmwKB1tgPZgXeRJZSm9WX</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1955</td>
+<td style="text-align: left;">1cbtDEwxCjMhglb49OgNBR</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">214</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1956</td>
+<td style="text-align: left;">7GXP5OhYyPVLmcVfO9Iqin</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">55</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1956</td>
+<td style="text-align: left;">4kca7vXd1Wo5GE2DMafvMc</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">306</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1957</td>
+<td style="text-align: left;">18tV6PLXYvVjsdOVk0S7M8</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2016</td>
+<td style="text-align: left;">7dK54iZuOxXFarGhXwEXfF</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It is important to identify the key or id variables (<code>id.vars</code> argument) associated to the observation, the albums. In this case we have <code>release_year</code> and <code>album_id</code>. The measure variables (<code>measure.vars</code> argument) are the variables we want to reshape. By default, the new variables are <code>variable</code> and <code>value</code> but we changed those names using the <code>variable.name</code> and <code>value.name</code> arguments.</p>
+<div class="alert alert-info">
+<p>When you have a lot of columns that go into <code>measure.vars</code> a nd that are named consistently, you can use pattern-based column marching using regular expressions and the <code>patterns()</code> function like here.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">patterns</span>(<span class="st">"^rank"</span>), </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>We can compute the album proportion again. But now we need to group by two variables: the year of release and the raking year. The <code>by</code> argument can also accepts a list so we’ll use the <code>.()</code> alias.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span> </span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">release_year</th>
+<th style="text-align: left;">rank_year</th>
+<th style="text-align: right;">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1955</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1956</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1957</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1959</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1961</td>
+<td style="text-align: left;">rank_2003</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Let’s plot the results again.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="material_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It looks like the albums released around 1970 were and still are the most popular.</p>
+<div class="alert alert-success">
+<p><strong>Your turn again!</strong></p>
+<ol type="1">
+<li><p>What is the mean rank on each ranking year for gender?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(rank_year, artist_gender)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</div>
+<p>The list has different type of albums, some are Studio albums, some are compilations, etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">unique</span>(type)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Studio"        "Compilation"   "Live"          "Greatest Hits"
+[5] "Soundtrack"   </code></pre>
+</div>
+</div>
+<p>Has the distribution of types of album changed over the decades? Let’s focus on the proportion of Compilation albums compared with the sum of Compilation and Studio albums and the 2003 ranking. First, we can compute the number of albums included in the ranking by type and by decade.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>(n_type_decade <span class="ot">&lt;-</span> rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, type)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">decade</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: right;">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">58</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1950</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Studio</td>
+<td style="text-align: right;">171</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Live</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Live</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1960</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: left;">Soundtrack</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Live</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1990</td>
+<td style="text-align: left;">Live</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">Greatest Hits</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">Compilation</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>To compute the number of Studio albums divided by the sum of Studio albums and compilations we need each type of album as its own column. We need to reshape our data again! But this time instead of making it longer, we need to make it wider. We can use <code>dcast()</code> for this</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">decade</th>
+<th style="text-align: right;">Compilation</th>
+<th style="text-align: right;">Greatest Hits</th>
+<th style="text-align: right;">Live</th>
+<th style="text-align: right;">Soundtrack</th>
+<th style="text-align: right;">Studio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">171</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">58</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>There are a lot of <code>NA</code>s for the combinations that didn’t appear in our long data. We know that in this case, these mean zero albums for that category for that decade. We can replace all <code>NA</code>s with zeroes with the <code>setnafill()</code> function (as the “set” prefix implies, this function modifies by reference).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">decade</th>
+<th style="text-align: right;">Compilation</th>
+<th style="text-align: right;">Greatest Hits</th>
+<th style="text-align: right;">Live</th>
+<th style="text-align: right;">Soundtrack</th>
+<th style="text-align: right;">Studio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1950</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1960</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">94</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1970</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">171</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1980</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">58</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>With that, we can now compute and plot the value we want</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Compilation<span class="sc">/</span>(Studio <span class="sc">+</span> Compilation)] <span class="sc">|&gt;</span> </span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="material_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Compilation albums make up less than 10% of the picks, except in the 90s.</p>
+<div class="alert alert-success">
+<p><strong>Your turn!</strong></p>
+<ol type="1">
+<li><p>What is the proportion of Male to Female artists for each decade in the 2003 ranking?</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender)] <span class="sc">|&gt;</span> </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+<li><p>Has this changed between the different ranking years? (You need to first melt and then dcast)</p>
+<div class="cell" data-solution="true">
+<details class="code-fold">
+<summary>Show one solution</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank))),</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender, rank_year)] <span class="sc">|&gt;</span> </span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">+</span> rank_year <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div></li>
+</ol>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

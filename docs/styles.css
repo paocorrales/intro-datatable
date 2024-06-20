@@ -1,0 +1,40 @@
+/* css styles */
+
+/* ------- element selectors ------- */
+
+/* style level one headers */
+h1 {
+  font-family: 'Fraunces';
+  font-size: 3rem;
+  text-align: left;
+}
+
+h2 {
+  font-family: 'Fraunces';
+  font-size: 2.25rem;
+  text-align: left;
+}
+
+h3 {
+  font-family: 'Fraunces';
+  font-size: 1.5rem;
+  text-align: left;
+}
+
+h4 {
+  font-family: 'Fraunces';
+  font-size: 1.25rem;
+  text-align: left;
+}
+
+h5 {
+  font-family: 'Fraunces';
+  font-size: 1rem;
+  text-align: left;
+}
+
+
+code {
+    font-size: 0.875em;
+    color: #333;
+}

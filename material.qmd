@@ -7,6 +7,13 @@ editor_options:
 
 ```{r setup, echo = FALSE, message = FALSE}
 library(printr)
+
+knitr::opts_hooks$set(solution = function(options) {
+  options[["code-fold"]] <- TRUE
+  options[["code-summary"]] <- "Show one solution"
+  options[["eval"]] <- FALSE
+  options
+})
 ```
 
 ## What data.table?
@@ -136,7 +143,7 @@ rolling_stone[artist_gender == "Female" & artist_member_count > 3]
 
 It is also possible to order de rows by any of the columns (we hide the output because it's too long).
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 rolling_stone[order(rank_2003)]
 ```
 
@@ -147,11 +154,7 @@ rolling_stone[order(rank_2003)]
 2.  How many albums got first position the Billboard magazine ranking?
 :::
 
-```{r}
-#| code-fold: true
-#| code-summary: "Show one solution"
-#| eval: false
-
+```{r, solution=TRUE}
 rolling_stone[clean_name == "your fav band here"]
 rolling_stone[peak_billboard_position == 1]
 ```
@@ -188,14 +191,11 @@ We seem to be missing two ranking2?
 **Your turn**
 
 1.  Which rankings are missing in the database?
-:::
 
-```{r}
-#| code-fold: true
-#| code-summary: "Show one solution"
-#| eval: false
-rolling_stone[, which(!(1:500 %in% rank_2003))]
-```
+    ```{r, solution=TRUE}
+    rolling_stone[, which(!(1:500 %in% rank_2003))]
+    ```
+:::
 
 It's probably more interesting to calculate the mean rank by genre.
 Let's first compute the mean of just one genre.
@@ -258,7 +258,7 @@ Some of the genres are relatively highly rated, but have very few examples inclu
 You can select only some columns using the same syntax but without applying any summary function.
 To return a data.table with just the columns `sort_name` and `rank_2003` you'd do:
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 rolling_stone[, .(sort_name, rank_2003)]
 ```
 :::
@@ -290,29 +290,23 @@ This makes it very efficient, but potentially surprising!
 **Your turn**
 
 1.  How may bands in the Latin genre appeared in the raking of 2020?
+
+    ```{r, solution=TRUE}
+    rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
+    ```
+
 2.  What the average of the birth year for each artist or band?
+
+    ```{r, solution=TRUE}
+    rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
+    ```
+
 3.  What is the mean raking of each album over the years?
-4.  What is the average number of years since debut calculated by artist_gender?
+
+    ```{r, solution=TRUE}
+    rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
+    ```
 :::
-
-```{r}
-#| code-fold: true
-#| code-summary: "Show one solution"
-#| eval: false
-
-# 1.  How may bands in the Latin genre appeared in the raking of 2020?
-rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
-
-# 2.  What the average of the birth year for each artist or band?
-rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
-
-# 3.  What is the mean raking of each album over the years?
-rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
-
-# 4.  What is the average number of years since debut calculated by artist_gender?
-rolling_stone[, mean(years_between, na.rm = TRUE), by = artist_gender]
-
-```
 
 ## Putting it all together
 
@@ -388,7 +382,8 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
 ```
 
 ::: {.alert .alert-info}
-You will probably find examples where a quoted walrus`":="` is used instead of the function `let()`. This is a functional form of the walrus operator that allows you to operate over more that one column at the same time. 
+You will probably find examples where a quoted walrus`":="` is used instead of the function `let()`.
+This is a functional form of the walrus operator that allows you to operate over more that one column at the same time.
 :::
 
 Looking at numbers in a table is not always enough.
@@ -413,28 +408,43 @@ That's right, you can pipe in a plot after doing the calculations.
 **Your turn**
 
 1.  Are bands more successful than solo artists?
+
+    ```{r, solution=TRUE}
+
+    rolling_stone[, is_band := artist_member_count > 1] |>
+      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+        by = is_band]
+
+    # Notice that due to reference semantics, this operation adds the 
+    # is_band column to the data.table. You can avoid this by using 
+    # an expression in the by argument.
+    rolling_stone |> 
+      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+        by = .(is_band = artist_member_count > 1)]
+
+    ```
+
 2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
-**AGREGAR MAS**
+
+    ```{r, solution=TRUE}
+    rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
+                      N = sum(!is.na(rank_2020))), by = type] |> 
+      _[, prop := N/sum(N)]
+
+    ```
+
+3.  What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column `years_between` ) for each genre?
+
+    ```{r, solution=TRUE}
+    rolling_stone[, .(mean_years = mean(years_between, na.rm = TRUE), .N),
+                    by = genre] |> 
+      _[order(mean_years)]
+    ```
 :::
-
-```{r}
-#| code-fold: true
-#| code-summary: "Show one solution"
-#| eval: false
-
-# 1.  Are bands more successful than solo artists?
-rolling_stone[, band := fifelse(artist_member_count == 1, "solo", "band")] |> 
-  _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
-        mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
-        mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), by = band]
-
-# 2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
-rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
-                  N = sum(!is.na(rank_2020))), by = type] |> 
-  _[, prop := N/sum(N)] 
-```
-
-
 
 ## Special symbols
 
@@ -462,7 +472,6 @@ rolling_stone[!is.na(rank_2003)] |>
 Interestingly, the majority of the albums in the raking of 2003 where released between the mid 60s and late 70s.
 Was music better at that time?
 Or maybe this is a reflection of the people compiling the ranking.
-
 
 ## Reshaping data
 
@@ -498,7 +507,7 @@ By default, the new variables are `variable` and `value` but we changed those na
 ::: {.alert .alert-info}
 When you have a lot of columns that go into `measure.vars` a nd that are named consistently, you can use pattern-based column marching using regular expressions and the `patterns()` function like here.
 
-```{r, eval = FALSE}
+```{r, eval=FALSE}
 rolling_stone |> 
   melt(id.vars = c("release_year", "album_id"), 
        measure.vars = patterns("^rank"), 
@@ -509,7 +518,7 @@ rolling_stone |>
 
 We can compute the album proportion again.
 But now we need to group by two variables: the year of release and the raking year.
-The `by` can also accepts a list so we'll use the `.()` alias.
+The `by` argument can also accepts a list so we'll use the `.()` alias.
 
 ```{r}
 rolling_stone |> 
@@ -541,19 +550,99 @@ It looks like the albums released around 1970 were and still are the most popula
 ::: {.alert .alert-success}
 **Your turn again!**
 
-1.  Does this patter persist when looking into popularity in Spotify?
-2.  How much time it takes to reach the 500 raking depending on the genre?
+1.  What is the mean rank on each ranking year for gender?
 
+    ```{r, solution=TRUE}
+    rolling_stone |> 
+      melt(id.vars = c("release_year", "album_id", "artist_gender"), 
+           measure.vars = c("rank_2003", "rank_2012", "rank_2020"), 
+           variable.name = "rank_year",
+           value.name = "rank") |> 
+      _[, .(mean_rank = mean(rank, na.rm = TRUE)), 
+        by = .(rank_year, artist_gender)]
+    ```
 :::
 
+The list has different type of albums, some are Studio albums, some are compilations, etc.
+
 ```{r}
-#| code-fold: true
-#| code-summary: "Show one solution"
-#| eval: false
-
-
+rolling_stone[, unique(type)]
 ```
 
-- [] Revisar ejercicio de melt y solución
-- [] Agregar cajita de nota con dcast
-- [] Agregar .SD? Capaz correlación entre spotify y raking?
+Has the distribution of types of album changed over the decades?
+Let's focus on the proportion of Compilation albums compared with the sum of Compilation and Studio albums and the 2003 ranking.
+First, we can compute the number of albums included in the ranking by type and by decade.
+
+```{r}
+(n_type_decade <- rolling_stone |> 
+  _[, .(N = sum(!is.na(rank_2003))), 
+    by = .(decade = floor(release_year / 10) * 10, type)])
+```
+
+To compute the number of Studio albums divided by the sum of Studio albums and compilations we need each type of album as its own column.
+We need to reshape our data again!
+But this time instead of making it longer, we need to make it wider.
+We can use `dcast()` for this
+
+```{r}
+n_type_decade |> 
+  dcast(decade ~ type, value.var = "N") 
+```
+
+There are a lot of `NA`s for the combinations that didn't appear in our long data.
+We know that in this case, these mean zero albums for that category for that decade.
+We can replace all `NA`s with zeroes with the `setnafill()` function (as the "set" prefix implies, this function modifies by reference).
+
+```{r}
+n_type_decade |> 
+  dcast(decade ~ type, value.var = "N") |> 
+  setnafill(fill = 0) |> 
+  head()
+```
+
+With that, we can now compute and plot the value we want
+
+```{r}
+n_type_decade |> 
+  dcast(decade ~ type, value.var = "N") |> 
+  setnafill(fill = 0) |> 
+  _[, ratio := Compilation/(Studio + Compilation)] |> 
+  ggplot(aes(decade, ratio)) +
+  geom_line() 
+```
+
+Compilation albums make up less than 10% of the picks, except in the 90s.
+
+::: {.alert .alert-success}
+**Your turn!**
+
+1.  What is the proportion of Male to Female artists for each decade in the 2003 ranking?
+
+    ```{r, solution=TRUE}
+    rolling_stone |> 
+      _[, .(N = sum(!is.na(rank_2003))), 
+        by = .(decade = floor(release_year / 10) * 10, artist_gender)] |> 
+      dcast(decade ~ artist_gender, value.var = "N") |> 
+      setnafill(fill = 0) |> 
+      _[, ratio := Male / (Male + Female)] |> 
+      ggplot(aes(decade, ratio)) +
+      geom_line()
+    ```
+
+2.  Has this changed between the different ranking years? (You need to first melt and then dcast)
+
+    ```{r, solution=TRUE}
+    rolling_stone |> 
+      melt(id.vars = c("release_year", "album_id", "artist_gender"), 
+           measure.vars = c("rank_2003", "rank_2012", "rank_2020"), 
+           variable.name = "rank_year",
+           value.name = "rank") |> 
+      _[, .(N = sum(!is.na(rank))),
+        by = .(decade = floor(release_year / 10) * 10, artist_gender, rank_year)] |> 
+      dcast(decade + rank_year ~ artist_gender, value.var = "N") |> 
+      _[, ratio := Male / (Male + Female)] |> 
+      ggplot(aes(decade, ratio)) +
+      geom_line(aes(color = rank_year))
+
+    ```
+:::
