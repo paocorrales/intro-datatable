@@ -1,7 +1,8 @@
 /*-- scss:defaults --*/
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&display=swap');
 
-$font-family-sans-serif: "Commissioner", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$font-family-sans-serif: "Commissioner", sans-serif !default;
 $font-family-monospace: "Commissioner", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 $web-font-path: "";
 
