@@ -11,6 +11,8 @@ website:
       - about.qmd
       - href: material.qmd
         text: Materials
+      - href: slides.qmd
+        text: Slides
 
 format:
   html:
