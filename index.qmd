@@ -16,32 +16,3 @@ The tutorial will also lay the foundations for learning more advanced features, 
 
 <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/deed.es_ES"><img src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" alt="Creative Commons License" style="border-width:0"/></a><br /> All materials in this course are under the license <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/deed.es_ES">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
 
-::: {.alert .alert-success}
-**Exersice**
-
--   `data/raw/madrid_minimum-temperature.csv`
-
--   `scripts/02_compute_mean-temperature.R`
-
--   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
-:::
-
-::: {.alert .alert-info}
-**Describe what do you think are the contents of these files:**
-
--   `data/raw/madrid_minimum-temperature.csv`
-
--   `scripts/02_compute_mean-temperature.R`
-
--   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
-:::
-
-::: {.alert .alert-primary}
-**Describe what do you think are the contents of these files:**
-
--   `data/raw/madrid_minimum-temperature.csv`
-
--   `scripts/02_compute_mean-temperature.R`
-
--   `analysis/01_madrid_minimum-temperature_descriptive-statistics.Rmd`
-:::
