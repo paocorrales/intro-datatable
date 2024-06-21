@@ -1,0 +1,289 @@
+---
+title: "Efficient data analysis with data.table"
+format: 
+  revealjs:
+    code-fold: true
+    echo: true
+    eval: false
+    theme: 
+      - custom_slides.scss
+    include-before-body: header.html
+editor: visual
+---
+
+
+```{r setup, echo = FALSE, message = FALSE}
+library(data.table)
+
+rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
+```
+
+# Welcome! <a href="https://r-datatable.com"><img src="https://raw.githubusercontent.com/Rdatatable/data.table/master/.graphics/logo.png" align="right" height="200" /></a>
+
+Find the materials here: [paocorrales.github.io/intro-datatable](https://paocorrales.github.io/intro-datatable)
+
+All materials in this course are under the license <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/deed.es_ES">CC-BY-SA 4.0</a>.
+
+##  {.center}
+
+### Who are we?
+
+Pao, Elio, Kelly
+
+##  {.center}
+
+### Who are you?
+
+### Introduce yourself to your neighbors 👋
+
+Share your name and how many hours took you to arrive to Salzburg
+
+## Housekeeping
+
+You will need:
+
+-   R
+-   data.table
+
+```         
+install.packages("data.table")
+```
+
+-   ggplot2 or any other visualisation package (optional)
+
+::: columns
+::: {.column width="50%"}
+<center>
+
+### <i class="fa fa-wifi"></i>
+
+Wi-Fi network name
+
+`TODO-ADD-LATER`
+
+</center>
+:::
+
+::: {.column width="50%"}
+<center>
+
+### <i class="fa fa-key"></i>
+
+Wi-Fi password
+
+`TODO-ADD-LATER`
+
+</center>
+:::
+:::
+
+## What is data.table?
+
+At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
+
+It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining datasets and much more.
+
+## Why data.table?
+
+-   Fast and efficient
+-   Does not have dependencies
+-   Syntax is very concise
+-   Ensures backwards compatibility
+
+## Follow along
+
+If you can, try the code we will show you on the screen.
+
+For the exercises, work in teams and use the sticky notes!
+
+. . .
+
+🟪 "I'm stuck and need help!"
+
+. . .
+
+🟩 "I finished the exercise"
+
+## The syntax
+
+The general data.table syntax looks like this:
+
+```{=html}
+<div  style=" margin-left: auto; margin-right: auto;display: block; text-align:center; width:fit-content;"> 
+<p style="font-size:200%;font-weight:bold" >
+<code>DT[<span class="rows">i</span>, <span class="columns">j</span>, <span class="by">by</span>]</code>
+</p>
+</div>
+```
+Where <code>**DT**</code> is a data.table object, the <code class="rows">[**i**]{.rows}</code> argument is used for filtering and joining operations, the <code class="columns">[**j**]{.columns}</code> argument can summarise and transform, and the <code class="by">[**by**]{.by}</code> argument defines the groups to which to apply these operations.
+
+You can read the syntax as "In these rows, do this, grouped by that".
+
+It is very concise but easy to read (sometimes).
+
+##  {.center}
+
+### Exercises
+
+---
+
+### Filter some rows
+
+1.  Is your favourite band/artist listed in the data?
+```{r}
+rolling_stone[clean_name == "your fav band here"]
+```
+
+2.  How many albums got first position the Billboard magazine ranking?
+```{r}
+rolling_stone[peak_billboard_position == 1]
+```
+
+---
+
+### Work with collumns
+
+1.  Which rankings are missing in the database?
+
+```{r}
+rolling_stone[, which(!(1:500 %in% rank_2003))]
+```
+
+
+---
+
+### Operate over collums and groups
+
+1.  How may bands in the Latin genre appeared in the raking of 2020?
+
+    ```{r}
+    rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
+    ```
+
+2.  What the average of the birth year for each artist or band?
+
+    ```{r}
+    rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
+    ```
+
+3.  What is the mean raking of each album over the years?
+
+    ```{r}
+    rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
+    ```
+    
+---
+
+### Piping operations
+
+1.  Are bands more successful than solo artists?
+
+    ```{r}
+
+    rolling_stone[, is_band := artist_member_count > 1] |>
+      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+        by = is_band]
+
+    # Notice that due to reference semantics, this operation adds the 
+    # is_band column to the data.table. You can avoid this by using 
+    # an expression in the by argument.
+    rolling_stone |> 
+      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+        by = .(is_band = artist_member_count > 1)]
+
+    ```
+
+2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
+
+    ```{r}
+    rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
+                      N = sum(!is.na(rank_2020))), by = type] |> 
+      _[, prop := N/sum(N)]
+
+    ```
+
+3.  What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column `years_between` ) for each genre?
+
+    ```{r}
+    rolling_stone[, .(mean_years = mean(years_between, na.rm = TRUE), .N),
+                    by = genre] |> 
+      _[order(mean_years)]
+    ```
+    
+---
+
+### Let's melt the data
+
+1.  What is the mean rank on each ranking year for gender?
+
+    ```{r}
+    rolling_stone |> 
+      melt(id.vars = c("release_year", "album_id", "artist_gender"), 
+           measure.vars = c("rank_2003", "rank_2012", "rank_2020"), 
+           variable.name = "rank_year",
+           value.name = "rank") |> 
+      _[, .(mean_rank = mean(rank, na.rm = TRUE)), 
+        by = .(rank_year, artist_gender)]
+    ```
+    
+---
+
+### Reshape!
+
+1.  What is the proportion of Male to Female artists for each decade in the 2003 ranking?
+
+    ```{r}
+    rolling_stone |> 
+      _[, .(N = sum(!is.na(rank_2003))), 
+        by = .(decade = floor(release_year / 10) * 10, artist_gender)] |> 
+      dcast(decade ~ artist_gender, value.var = "N") |> 
+      setnafill(fill = 0) |> 
+      _[, ratio := Male / (Male + Female)] |> 
+      ggplot(aes(decade, ratio)) +
+      geom_line()
+    ```
+
+2.  Has this changed between the different ranking years? (You need to first melt and then dcast)
+
+    ```{r}
+    rolling_stone |> 
+      melt(id.vars = c("release_year", "album_id", "artist_gender"), 
+           measure.vars = c("rank_2003", "rank_2012", "rank_2020"), 
+           variable.name = "rank_year",
+           value.name = "rank") |> 
+      _[, .(N = sum(!is.na(rank))),
+        by = .(decade = floor(release_year / 10) * 10, artist_gender, rank_year)] |> 
+      dcast(decade + rank_year ~ artist_gender, value.var = "N") |> 
+      _[, ratio := Male / (Male + Female)] |> 
+      ggplot(aes(decade, ratio)) +
+      geom_line(aes(color = rank_year))
+
+    ```
+
+
+---
+
+## {.center}
+
+### How to contribute
+
+---
+
+## It is a great time to join the data.table community! 
+
+In 2023-2025, National Science Foundation has provided funds to support expanding the ecosystem of users and contributors around data.table.
+
+* data.table on Mastodon: [@r_data_table@fosstodon.org](https://fosstodon.org/deck/@r_data_table)
+* The Raft [rdatatable-community.github.io/The-Raft](https://rdatatable-community.github.io/The-Raft/), the data.table blog.
+* The GitHub [repo](https://github.com/Rdatatable/data.table) with 900+ open issues, 100+ open PRs. 
+If you have any time/interest, we could use your help!
+
+---
+
+# Thanks for joining! 
+
+[paocorrales.github.io/intro-datatable](https://paocorrales.github.io/intro-datatable)
