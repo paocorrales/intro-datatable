@@ -11,7 +11,7 @@ It also provides a whole set of extra functions for reading from and writing to 
 
 data.table mascot is a sea lion, which barks "R R R" 
 
-Take a quick look at it funtionalities:
+Take a quick look at it functionalities:
 
 <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/master/datatable.pdf"><img src="https://raw.githubusercontent.com/rstudio/cheatsheets/master/pngs/datatable.png" width="615" height="242"/></a>
 
