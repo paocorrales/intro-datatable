@@ -16,19 +16,17 @@ knitr::opts_hooks$set(solution = function(options) {
 })
 ```
 
-## What data.table?
+## What is data.table?
 
 At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
 It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining datasets and much more.
 
 ## Why data.table?
 
--   fast and efficient
--   no dependencies
--   concise
--   backwards compatibility
-
-efficient syntax (saves programming time) efficient C code implementation (saves time and memory)
+-   Fast and efficient
+-   Does not have dependencies
+-   Syntax is very concise
+-   Ensures backwards compatibility
 
 ## Reference semantics
 
@@ -151,13 +149,15 @@ rolling_stone[order(rank_2003)]
 **Filter some rows!**
 
 1.  Is your favourite band/artist listed in the data?
-2.  How many albums got first position the Billboard magazine ranking?
-:::
-
 ```{r, solution=TRUE}
 rolling_stone[clean_name == "your fav band here"]
+```
+2.  How many albums got first position the Billboard magazine ranking?
+```{r, solution=TRUE}
 rolling_stone[peak_billboard_position == 1]
 ```
+:::
+
 
 ## Operating with column(s) in [j]{.columns}
 
