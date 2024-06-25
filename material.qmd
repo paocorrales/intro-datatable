@@ -5,7 +5,7 @@ editor_options:
   chunk_output_type: inline
 engine: knitr
 webr: 
-  packages: ['ggplot2', 'data.table', 'printr'] # Install R packages on document open
+  packages: ['ggplot2', 'data.table'] # Install R packages on document open
   cell-options:
     autorun: true
 filters:

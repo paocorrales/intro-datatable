@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-is-data.table" id="toc-what-is-data.table" class="nav-link active" data-scroll-target="#what-is-data.table">What is data.table?</a></li>
+  <li><a href="#what-data.table" id="toc-what-data.table" class="nav-link active" data-scroll-target="#what-data.table">What data.table?</a></li>
   <li><a href="#why-data.table" id="toc-why-data.table" class="nav-link" data-scroll-target="#why-data.table">Why data.table?</a></li>
   <li><a href="#reference-semantics" id="toc-reference-semantics" class="nav-link" data-scroll-target="#reference-semantics">Reference semantics</a></li>
   <li><a href="#reading-data-with-data.table" id="toc-reading-data-with-data.table" class="nav-link" data-scroll-target="#reading-data-with-data.table">Reading data with data.table</a>
@@ -192,8 +192,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="what-is-data.table" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-data.table">What is data.table?</h2>
+<pre class="{webr-r}"><code>#| context: setup
+library(data.table)
+library(ggplot2)
+library(printr)
+rolling_stone &lt;- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')</code></pre>
+<section id="what-data.table" class="level2">
+<h2 class="anchored" data-anchor-id="what-data.table">What data.table?</h2>
 <p>At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax. It also provides a whole set of extra functions for reading from and writing to tabular files, reshaping data between long and wide formats, joining datasets and much more.</p>
 </section>
 <section id="why-data.table" class="level2">
@@ -208,19 +213,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reference-semantics" class="level2">
 <h2 class="anchored" data-anchor-id="reference-semantics">Reference semantics</h2>
 <p>Most R functions and methods uses copy-on-modify. This means that modifying an object almost always creates a new copy of the object, while the original one is kept unmodified. For example this code</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_data <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_column =</span> old_column<span class="sc">*</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_data <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_column =</span> old_column<span class="sc">*</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>returns a new tibble that is a copy of <code>my_data</code> with a new column but it doesn’t modify <code>my_data</code>.</p>
 <p>data.table uses modify-in-place, which means that objects are <strong>not</strong> copied whene modified. This code</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my_data[, new_column <span class="sc">:</span><span class="er">=</span> old_column<span class="sc">*</span><span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>my_data[, new_column <span class="sc">:</span><span class="er">=</span> old_column<span class="sc">*</span><span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>doesn’t create a new copy of <code>my_data</code> but it rather modifies <code>my_data</code> directly. This is similar to the base R code:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>my_data<span class="sc">$</span>new_column <span class="ot">&lt;-</span> data<span class="sc">$</span>new_column</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>my_data<span class="sc">$</span>new_column <span class="ot">&lt;-</span> data<span class="sc">$</span>new_column</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Modify-in-place is one of the features that makes data.table so efficient, but it can also make code harder to think about and lead to surprising results (especially if a data.table is modified inside a function).</p>
 <p>Functions that modify a data.table in place start with “set”, like <code>setcolorder()</code> (reorders columns) or <code>setnames()</code> (renames columns).</p>
 </section>
@@ -228,24 +227,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="reading-data-with-data.table">Reading data with data.table</h2>
 <p>The first step of most data analyses is to read data in memory. We can use the <code>data.table::fread()</code> function (the f is for <em>fast</em>) to read regular delimited files such as csv files. This function not only is fast, but it automatically detects the delimiter and guesses the class of each column and the number of rows in the file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'data/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'data/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>It is also possible to read data from a URL.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>fread()</code> will return a data.table object. If you read a dataset as a data.frame or tibble and want to create it as a But sometimes you’ll have a data.frame or a tibble that you loaded into R using other methods. You can convert them to data.table either with the <code>as.data.table()</code> or <code>setDT()</code> functions. The difference is that <code>as.data.table()</code> returns a copy of the data as a data.table and <code>setDT()</code> changes the data in place (as it is expected by the “set” prefix).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setDT</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setDT</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="the-rolling-stone-data" class="level3">
 <h3 class="anchored" data-anchor-id="the-rolling-stone-data">The Rolling Stone data</h3>
 <p>The data we’ll use comes from the <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday project</a>, includes album rankings from Rolling Stone magazine. It has <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md#data-dictionary">21 variables</a> and 691 observations, not a big task for data.table but it will help us to explore some of the funtionalities.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(rolling_stone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'data.table' and 'data.frame':  691 obs. of  21 variables:
  $ sort_name               : chr  "Sinatra, Frank" "Diddley, Bo" "Presley, Elvis" "Sinatra, Frank" ...
@@ -290,7 +287,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="subset-rows-in-i">Subset rows in <span class="rows">i</span></h2>
 <p>Which is the number one album in the 2003 ranking? We need to filter our dataset to show only rows where <code>rank_2003</code> is 1:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -371,7 +368,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This is similar to how we’d use a regular data.frame:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rolling_stone<span class="sc">$</span>rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[rolling_stone<span class="sc">$</span>rank_2003 <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -452,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>But because all expressions in <code class="rows"><span class="rows">i</span></code> are evaluated in the context of the data.table, we don’t need to type the name of the data.frame again. This becomes even more convenient with longer expressions. For example, what are the female bands with more than 3 members?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[artist_gender <span class="sc">==</span> <span class="st">"Female"</span> <span class="sc">&amp;</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[artist_gender <span class="sc">==</span> <span class="st">"Female"</span> <span class="sc">&amp;</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -601,36 +598,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>It is also possible to order de rows by any of the columns (we hide the output because it’s too long).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="fu">order</span>(rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="fu">order</span>(rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="alert alert-success">
 <p><strong>Filter some rows!</strong></p>
 <ol type="1">
-<li>Is your favourite band/artist listed in the data?</li>
-</ol>
+<li><p>Is your favourite band/artist listed in the data?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[clean_name <span class="sc">==</span> <span class="st">"your fav band here"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[clean_name <span class="sc">==</span> <span class="st">"your fav band here"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-</div>
-<ol start="2" type="1">
-<li>How many albums got first position the Billboard magazine ranking?</li>
-</ol>
+</div></li>
+<li><p>Which albums got first position the Billboard magazine ranking?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[peak_billboard_position <span class="sc">==</span> <span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[peak_billboard_position <span class="sc">==</span> <span class="dv">1</span>] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-</div>
+</div></li>
+</ol>
 </div>
 </section>
 <section id="operating-with-columns-in-j" class="level2">
 <h2 class="anchored" data-anchor-id="operating-with-columns-in-j">Operating with column(s) in <span class="columns">j</span></h2>
 <p>Filtering and ordering is fun an all, but we need to operate on the columns. Just for fun, what is the mean ranking in 2003?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 250.504</code></pre>
 </div>
@@ -641,7 +640,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Now, the mean of the numbers 1 through 500 is 250.5, so this results tells us that something strange is going on. Some ranking seems to be missing. How many unique elements do we have? The <code>uniqueN()</code> function is from data.table and is a more efficient version of doing <code>length(unique(rank_2003))</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">uniqueN</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">uniqueN</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 498</code></pre>
 </div>
@@ -651,24 +650,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Your turn</strong></p>
 <ol type="1">
 <li><p>Which rankings are missing in the database?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">which</span>(<span class="sc">!</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">500</span> <span class="sc">%in%</span> rank_2003))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">which</span>(<span class="sc">!</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">500</span> <span class="sc">%in%</span> rank_2003))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 </ol>
 </div>
 <p>It’s probably more interesting to calculate the mean rank by genre. Let’s first compute the mean of just one genre.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 376.4286</code></pre>
 </div>
 </div>
 <div class="alert alert-info">
 <p>data.table is very efficient at subsetting rows and doing calculations over columns. For this expression:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"Electronic"</span>, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>data.table:</p>
 <ol type="1">
 <li>find the <em>row indices</em> that match <code>genre == "Electronic"</code>. It does not subset over the entire table.</li>
@@ -678,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>There are a lot of genres so it would’t be too convenient to write one line for each one. It’s much better to group rows by genre using <span class="by"><code>by</code></span>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -762,7 +764,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>When doing stuff with <span class="by">by</span>, the result is always a data.table with the columns used to define the groups and columns to store the results. If we don’t give it any names, data.table assigns the defaults <code>V1</code>, <code>V2</code>, etc. This is fine for quick one-liners, but for regular code it’s much better to name the results. We do this by returning a named list:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">list</span>(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">list</span>(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -846,7 +848,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This idiom is so common that data.table allows us to use <code>.</code> as an alias for <code>list</code>, so most of the time you’d see something like this:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -930,9 +932,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>As long as <span class="columns">j</span>-expression returns a list, each element of the list will be converted to a column in the resulting data.table. This allows us to return more than one summary expression. What is the mean rank and number of bands included in the rank per genre?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>              by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>              by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1035,18 +1037,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Some of the genres are relatively highly rated, but have very few examples included.</p>
 <div class="alert alert-info">
 <p>You can select only some columns using the same syntax but without applying any summary function. To return a data.table with just the columns <code>sort_name</code> and <code>rank_2003</code> you’d do:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(sort_name, rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(sort_name, rank_2003)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You might’ve noticed that “Blues/Blues Rock” also appears as “Blues/Blues ROck”. Someone made a typo! We need to modify the genre column to fix that mistake. One way would be to turn all genres to all lower case and forget about cases altogether.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">tolower</span>(genre)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">tolower</span>(genre)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This operator <code>:=</code> is called “walrus”. It can be used to update existing columns (like we just did) or to create new ones. It is possible also to delete columns with <code>DT[, variable := NULL]</code>.</p>
 <p>Notice that we didn’t get any output and we didn’t assigned the result. But <code>rolling_stone</code> is modified anyway:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1129,24 +1129,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Your turn</strong></p>
 <ol type="1">
 <li><p>How may bands in the Latin genre appeared in the raking of 2020?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"latin"</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"latin"</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 <li><p>What the average of the birth year for each artist or band?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, artist_birth_year_mean <span class="sc">:</span><span class="er">=</span> artist_birth_year_sum<span class="sc">/</span>artist_member_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, artist_birth_year_mean <span class="sc">:</span><span class="er">=</span> artist_birth_year_sum<span class="sc">/</span>artist_member_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 <li><p>What is the mean raking of each album over the years?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, mean_raking <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(rank_2003, rank_2012, rank_2020), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> album_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, mean_raking <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(rank_2003, rank_2012, rank_2020), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> album_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 </ol>
@@ -1157,7 +1166,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Up to now we made one operation at a time but it would be useful to chain operations (like you would do with dplyr for example). Let’s say we want to order genres by their mean ranking in 2003.</p>
 <p>We can chain operations with data.table by continuing to use <code>[</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1236,24 +1245,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Or like this for better readability:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>][<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>There are <a href="https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/">other possibilities, like using a pipe operator</a>. You could use the old and wise magrittr pipe <code>%&gt;%</code> along with <code>.</code> as a placeholder which, within a magrittr pipe, refers to the result of the previous step.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">%&gt;%</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>.[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>.[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="alert alert-info">
 <p>It is very important to distinguish between the <code>.</code> as alias for <code>list()</code> an the <code>.</code> as a placeholder within the magrittr pipe.</p>
 </div>
 <p>Using the native pipe <code>|&gt;</code> before R 4.3.0 was more tricky as the pipe didn’t have a placeholder. But since that R version the native pipe supports a <code>_</code> placeholder to the right-hand side fo the pipe:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>_[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>_[<span class="fu">order</span>(mean_rank)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Now you can chain operations using any of the options. We’ll stick to the <code>|&gt;</code> as is what we usually use.</p>
 <p>Let’s get serious about analysing this data. It would be interesting to add the proportion as well as the number of albums in each genre:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1367,11 +1376,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>A full 25% of bands (125) in the 2003 ranking have no assigned genre. Having a empty label is not ideal, let’s modify the variable.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre)] <span class="sc">|&gt;</span> </span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)] <span class="sc">|&gt;</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre)] <span class="sc">|&gt;</span> </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1485,11 +1494,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>When doing lot’s of column modifications like in the previous lines, it’s more convenient (and sometimes more efficient) to do all the modifications in a single step. For that we can use the <code>let()</code> function, which is like a functional form of the walrus operator that can assign multiple columns at once:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">fifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">fifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1606,20 +1615,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Looking at numbers in a table is not always enough. Let’s plot the results.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#Or any another package to make plots</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] <span class="sc">|&gt;</span> </span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> forcats<span class="sc">::</span><span class="fu">fct_reorder</span>(genre, prop)] <span class="sc">|&gt;</span> </span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(prop, genre)) <span class="sc">+</span></span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#Or any another package to make plots</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  _[, <span class="fu">let</span>(<span class="at">prop =</span> N<span class="sc">/</span><span class="fu">sum</span>(N),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">genre =</span> <span class="fu">ifelse</span>(genre <span class="sc">==</span> <span class="st">""</span>, <span class="st">"unknown genre"</span>, genre))] <span class="sc">|&gt;</span> </span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(<span class="sc">-</span>prop)] <span class="sc">|&gt;</span> </span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  _[, genre <span class="sc">:</span><span class="er">=</span> forcats<span class="sc">::</span><span class="fu">fct_reorder</span>(genre, prop)] <span class="sc">|&gt;</span> </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(prop, genre)) <span class="sc">+</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="material_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="material_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1629,41 +1638,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Your turn</strong></p>
 <ol type="1">
 <li><p>Are bands more successful than solo artists?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, is_band <span class="sc">:</span><span class="er">=</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="sc">|&gt;</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> is_band]</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Notice that due to reference semantics, this operation adds the </span></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co"># is_band column to the data.table. You can avoid this by using </span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co"># an expression in the by argument.</span></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">is_band =</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, is_band <span class="sc">:</span><span class="er">=</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="sc">|&gt;</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> is_band]</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Notice that due to reference semantics, this operation adds the </span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># is_band column to the data.table. You can avoid this by using </span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co"># an expression in the by argument.</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">is_band =</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 <li><p>What is the proportion of albums recorded in a Studio and their mean position in 2020?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> type] <span class="sc">|&gt;</span> </span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> type] <span class="sc">|&gt;</span> </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
-<li><p>What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column <code>years_between</code> ) for each genre?</p>
+<li><p>What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column <code>years_between</code>) for each genre?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_years =</span> <span class="fu">mean</span>(years_between, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), .N),</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(mean_years)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">mean_years =</span> <span class="fu">mean</span>(years_between, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), .N),</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>                by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  _[<span class="fu">order</span>(mean_years)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 </ol>
@@ -1674,8 +1692,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>data.table has special symbols that provide extra functionality. We are going to only mention <code>.N</code> , which counts the number of rows in the group and it is particularly useful when used along with <code>by</code>.</p>
 <p>How many albums per year were included in the 2003 ranking? To answer this question we can first filter only albums that were included in the 2003 ranking and then count the number of rows per <code>release_year</code>?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1883,14 +1901,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>When using the <code>.N</code> symbol, the name of the result is automatically named “N”. Let’s plot that:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)] <span class="sc">|&gt;</span> </span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="material_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="material_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1901,10 +1919,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="reshaping-data">Reshaping data</h2>
 <p>Do all rankings have the same album make-up in terms of year of release? We can count the number of non-NA values for each ranking by release year:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">N_2003 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)),</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2012 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2012)),</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2020 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, .(<span class="at">N_2003 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003)),</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2012 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2012)),</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">N_2020 =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> release_year] <span class="sc">|&gt;</span> </span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1958,12 +1976,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>This is very tedious, error-prone and makes plotting the results more difficult. Every time you are applying the same operation to multiple columns it is very likely that you’d be better off reshaping your data. In this case, we would like to have a single column with the ranking position and another column that identifies which year’s ranking it is. So, lets <em>melt</em> the table.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2018,24 +2036,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>It is important to identify the key or id variables (<code>id.vars</code> argument) associated to the observation, the albums. In this case we have <code>release_year</code> and <code>album_id</code>. The measure variables (<code>measure.vars</code> argument) are the variables we want to reshape. By default, the new variables are <code>variable</code> and <code>value</code> but we changed those names using the <code>variable.name</code> and <code>value.name</code> arguments.</p>
 <div class="alert alert-info">
 <p>When you have a lot of columns that go into <code>measure.vars</code> a nd that are named consistently, you can use pattern-based column marching using regular expressions and the <code>patterns()</code> function like here.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">patterns</span>(<span class="st">"^rank"</span>), </span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">patterns</span>(<span class="st">"^rank"</span>), </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can compute the album proportion again. But now we need to group by two variables: the year of release and the raking year. The <code>by</code> argument can also accepts a list so we’ll use the <code>.()</code> alias.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span> </span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span> </span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2082,19 +2098,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Let’s plot the results again.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>), </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  _[<span class="sc">!</span><span class="fu">is.na</span>(rank)] <span class="sc">|&gt;</span> </span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>  _[, .N, by <span class="ot">=</span> .(release_year, rank_year)] <span class="sc">|&gt;</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(release_year, N)) <span class="sc">+</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="material_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="material_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2104,23 +2120,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Your turn again!</strong></p>
 <ol type="1">
 <li><p>What is the mean rank on each ranking year for gender?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(rank_year, artist_gender)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(rank_year, artist_gender)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 </ol>
 </div>
 <p>The list has different type of albums, some are Studio albums, some are compilations, etc.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">unique</span>(type)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>rolling_stone[, <span class="fu">unique</span>(type)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Studio"        "Compilation"   "Live"          "Greatest Hits"
 [5] "Soundtrack"   </code></pre>
@@ -2128,9 +2147,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Has the distribution of types of album changed over the decades? Let’s focus on the proportion of Compilation albums compared with the sum of Compilation and Studio albums and the 2003 ranking. First, we can compute the number of albums included in the ranking by type and by decade.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>(n_type_decade <span class="ot">&lt;-</span> rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, type)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>(n_type_decade <span class="ot">&lt;-</span> rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, type)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2267,8 +2286,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>To compute the number of Studio albums divided by the sum of Studio albums and compilations we need each type of album as its own column. We need to reshape our data again! But this time instead of making it longer, we need to make it wider. We can use <code>dcast()</code> for this</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2344,10 +2363,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>There are a lot of <code>NA</code>s for the combinations that didn’t appear in our long data. We know that in this case, these mean zero albums for that category for that decade. We can replace all <code>NA</code>s with zeroes with the <code>setnafill()</code> function (as the “set” prefix implies, this function modifies by reference).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -2415,12 +2434,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>With that, we can now compute and plot the value we want</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Compilation<span class="sc">/</span>(Studio <span class="sc">+</span> Compilation)] <span class="sc">|&gt;</span> </span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>n_type_decade <span class="sc">|&gt;</span> </span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> type, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Compilation<span class="sc">/</span>(Studio <span class="sc">+</span> Compilation)] <span class="sc">|&gt;</span> </span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
@@ -2428,7 +2447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="material_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="material_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2438,34 +2457,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Your turn!</strong></p>
 <ol type="1">
 <li><p>What is the proportion of Male to Female artists for each decade in the 2003 ranking?</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender)] <span class="sc">|&gt;</span> </span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender)] <span class="sc">|&gt;</span> </span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 <li><p>Has this changed between the different ranking years? (You need to first melt and then dcast)</p>
+<pre class="{webr-r}"><code>#| autorun: false
+# Write your code here!
+rolling_stone</code></pre>
 <div class="cell" data-solution="true">
 <details class="code-fold">
 <summary>Show one solution</summary>
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank))),</span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender, rank_year)] <span class="sc">|&gt;</span> </span>
-<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">+</span> rank_year <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
-<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank))),</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender, rank_year)] <span class="sc">|&gt;</span> </span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dcast</span>(decade <span class="sc">+</span> rank_year <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div></li>
 </ol>
