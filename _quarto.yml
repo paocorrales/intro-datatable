@@ -13,7 +13,8 @@ website:
         text: Materials
       - href: slides.qmd
         text: Slides
-
+      - href: sandbox.qmd
+        text: Sandbox
 format:
   html:
     theme: 

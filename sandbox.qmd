@@ -1,0 +1,28 @@
+---
+title: "Sandbox"
+webr: 
+  packages: ['ggplot2', 'data.table'] # Install R packages on document open
+  cell-options:
+    autorun: true
+filters:
+  - webr  
+---
+
+This is a sandbox, a code chunk to run R code using webR. data.table and ggplot2 are already loaded along with the Rolling Stone data set. Everything is ready to run the tutorial' examples and exercises. 
+
+
+```{webr-r}
+#| context: setup
+library(data.table)
+library(ggplot2)
+
+rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
+```
+
+```{webr-r}
+#| autorun: false
+# Write your code here!
+rolling_stone
+```
+
+
