@@ -57,6 +57,12 @@ $navbar-bg: teal;
 .alert-success {
   padding-left: 4rem;
   position: relative;
+  background-color: teal;
+}
+
+.code-fold > summary {
+ color: #ebebeb !important;
+ font-size: 0.80rem;
 }
 
 .alert-success::before {
