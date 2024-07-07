@@ -221,10 +221,24 @@ rolling_stone[, uniqueN(rank_2003, na.rm = TRUE)]
 ```
 
 Huh.
-We seem to be missing two ranking2?
+We seem to be missing two ranking?
 
 ::: {.alert .alert-success}
 **Your turn**
+
+
+1. Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking? Compute the correlation (hint: there are missing values, so you will need to use `use = "complete.obs"`).
+
+    ```{webr-r}
+    #| autorun: false
+    # Write your code here!
+    rolling_stone
+    ```
+
+    ```{r, solution=TRUE}
+    rolling_stone[, cor(spotify_popularity, rank_2003, use = "complete.obs")]
+    ```
+    
 
 1.  Which rankings are missing in the database?
 

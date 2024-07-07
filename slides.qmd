@@ -11,14 +11,13 @@ format:
 editor: visual
 ---
 
-
 ```{r setup, echo = FALSE, message = FALSE}
 library(data.table)
 
 rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
 ```
 
-# Welcome! <a href="https://r-datatable.com"><img src="https://raw.githubusercontent.com/Rdatatable/data.table/master/.graphics/logo.png" align="right" height="200" /></a>
+# Welcome! <a href="https://r-datatable.com"><img src="https://raw.githubusercontent.com/Rdatatable/data.table/master/.graphics/logo.png" align="right" height="200"/></a>
 
 Find the materials here: [paocorrales.github.io/intro-datatable](https://paocorrales.github.io/intro-datatable)
 
@@ -34,9 +33,9 @@ Pao, Elio, Kelly
 
 ### Who are you?
 
-### Introduce yourself to your neighbors 👋
+### Introduce yourself to your neighbours 👋
 
-Share your name and how many hours took you to arrive to Salzburg
+Share your name and how many hours it took you to arrive to Salzburg
 
 ## Housekeeping
 
@@ -45,7 +44,7 @@ You will need:
 -   R
 -   data.table
 
-```         
+``` r
 install.packages("data.table")
 ```
 
@@ -104,6 +103,12 @@ For the exercises, work in teams and use the sticky notes!
 
 🟩 "I finished the exercise"
 
+. . .
+
+### Materials
+
+[https://bit.ly/datatable-user2024](https://bit.ly/datatable-user2024)
+
 ## The syntax
 
 The general data.table syntax looks like this:
@@ -125,34 +130,42 @@ It is very concise but easy to read (sometimes).
 
 ### Exercises
 
----
+------------------------------------------------------------------------
 
 ### Filter some rows
 
 1.  Is your favourite band/artist listed in the data?
+
 ```{r}
 rolling_stone[clean_name == "your fav band here"]
 ```
 
 2.  How many albums got first position the Billboard magazine ranking?
+
 ```{r}
 rolling_stone[peak_billboard_position == 1]
 ```
 
----
 
-### Work with collumns
+------------------------------------------------------------------------
 
-1.  Which rankings are missing in the database?
+### Work with columns
+
+1. Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking? Compute the correlation (hint: there are missing values, so you will need to use `use = "complete.obs"`).
+
+```{r}
+rolling_stone[, cor(spotify_popularity, rank_2003, use = "complete.obs")]
+```
+
+2.  Which rankings are missing in the database?
 
 ```{r}
 rolling_stone[, which(!(1:500 %in% rank_2003))]
 ```
 
+------------------------------------------------------------------------
 
----
-
-### Operate over collums and groups
+### Operate over colums and groups
 
 1.  How may bands in the Latin genre appeared in the raking of 2020?
 
@@ -171,8 +184,20 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
     ```{r}
     rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
     ```
-    
----
+
+
+# Break!
+
+Take 15 minutes. 
+
+```{r, eval=TRUE, echo=FALSE}
+countdown::countdown(minutes = 15,  
+                     color_text = "#008080", 
+                     color_running_background = "#008080",  
+                     color_running_text = "white")
+```
+
+------------------------------------------------------------------------
 
 ### Piping operations
 
@@ -213,8 +238,8 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
                     by = genre] |> 
       _[order(mean_years)]
     ```
-    
----
+
+------------------------------------------------------------------------
 
 ### Let's melt the data
 
@@ -229,8 +254,8 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
       _[, .(mean_rank = mean(rank, na.rm = TRUE)), 
         by = .(rank_year, artist_gender)]
     ```
-    
----
+
+------------------------------------------------------------------------
 
 ### Reshape!
 
@@ -247,7 +272,8 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
       geom_line()
     ```
 
-2.  Has this changed between the different ranking years? (You need to first melt and then dcast)
+2.  Has this changed between the different ranking years?
+    (You need to first melt and then dcast)
 
     ```{r}
     rolling_stone |> 
@@ -264,26 +290,24 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
 
     ```
 
+------------------------------------------------------------------------
 
----
-
-## {.center}
+##  {.center}
 
 ### How to contribute
 
----
+------------------------------------------------------------------------
 
-## It is a great time to join the data.table community! 
+## It is a great time to join the data.table community!
 
 In 2023-2025, National Science Foundation has provided funds to support expanding the ecosystem of users and contributors around data.table.
 
-* data.table on Mastodon: [@r_data_table@fosstodon.org](https://fosstodon.org/deck/@r_data_table)
-* The Raft [rdatatable-community.github.io/The-Raft](https://rdatatable-community.github.io/The-Raft/), the data.table blog.
-* The GitHub [repo](https://github.com/Rdatatable/data.table) with 900+ open issues, 100+ open PRs. 
-If you have any time/interest, we could use your help!
+-   data.table on Mastodon: [\@r_data_table\@fosstodon.org](https://fosstodon.org/deck/@r_data_table)
+-   The Raft [rdatatable-community.github.io/The-Raft](https://rdatatable-community.github.io/The-Raft/), the data.table blog.
+-   The GitHub [repo](https://github.com/Rdatatable/data.table) with 900+ open issues, 100+ open PRs. If you have any time/interest, we could use your help!
 
----
+------------------------------------------------------------------------
 
-# Thanks for joining! 
+# Thanks for joining!
 
 [paocorrales.github.io/intro-datatable](https://paocorrales.github.io/intro-datatable)
