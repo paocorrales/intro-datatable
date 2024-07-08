@@ -116,7 +116,7 @@
     "href": "slides.html#housekeeping",
     "title": "Efficient data analysis with data.table",
     "section": "Housekeeping",
-    "text": "Housekeeping\nYou will need:\n\nR\ndata.table\n\ninstall.packages(\"data.table\")\n\nggplot2 or any other visualisation package (optional)\n\n\n\n\n\nWi-Fi network name\nTODO-ADD-LATER\n\n\n\n\nWi-Fi password\nTODO-ADD-LATER"
+    "text": "Housekeeping\nYou will need:\n\nR\ndata.table\n\ninstall.packages(\"data.table\")\n\nggplot2 or any other visualisation package (optional)\n\n\n\n\n\nWi-Fi network name\nuserr2024\n\n\n\n\nsalzburg\nTODO-ADD-LATER"
   },
   {
     "objectID": "slides.html#what-is-data.table",

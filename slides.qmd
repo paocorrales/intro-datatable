@@ -58,7 +58,7 @@ install.packages("data.table")
 
 Wi-Fi network name
 
-`TODO-ADD-LATER`
+userr2024
 
 </center>
 :::
@@ -68,7 +68,7 @@ Wi-Fi network name
 
 ### <i class="fa fa-key"></i>
 
-Wi-Fi password
+salzburg
 
 `TODO-ADD-LATER`
 
