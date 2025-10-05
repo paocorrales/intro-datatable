@@ -210,12 +210,13 @@
 <section id="section" class="slide level2 center">
 <h2></h2>
 <h3 id="who-are-we">Who are we?</h3>
-<p>Pao, Elio</p>
+<p>Pao, Elio, Kelly</p>
 </section>
 <section id="section-1" class="slide level2 center">
 <h2></h2>
 <h3 id="who-are-you">Who are you?</h3>
-<p>Share your name and what’s your favourite ice-cream flavour.</p>
+<h3 id="introduce-yourself-to-your-neighbours">Introduce yourself to your neighbours 👋</h3>
+<p>Share your name and how many hours it took you to arrive to Salzburg</p>
 </section>
 <section id="housekeeping" class="slide level2">
 <h2>Housekeeping</h2>
@@ -228,6 +229,20 @@
 <ul>
 <li>ggplot2 or any other visualisation package (optional)</li>
 </ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<center>
+<h3 id="section-2"><i class="fa fa-wifi"></i></h3>
+<p>Wi-Fi network name</p>
+<p>userr2024</p>
+</center>
+</div><div class="column" style="width:50%;">
+<center>
+<h3 id="section-3"><i class="fa fa-key"></i></h3>
+<p>salzburg</p>
+<p><code>TODO-ADD-LATER</code></p>
+</center>
+</div></div>
 </section>
 <section id="what-is-data.table" class="slide level2">
 <h2>What is data.table?</h2>
@@ -246,9 +261,17 @@
 <section id="follow-along" class="slide level2">
 <h2>Follow along</h2>
 <p>If you can, try the code we will show you on the screen.</p>
-<p>If you’re stuck or need help, tell us in the chat.</p>
+<p>For the exercises, work in teams and use the sticky notes!</p>
+<div class="fragment">
+<p>🟪 “I’m stuck and need help!”</p>
+</div>
+<div class="fragment">
+<p>🟩 “I finished the exercise”</p>
+</div>
+<div class="fragment">
 <h3 id="materials">Materials</h3>
-<p><a href="https://paocorrales.github.io/intro-datatable/" class="uri">https://paocorrales.github.io/intro-datatable/</a></p>
+<p><a href="https://bit.ly/datatable-user2024" class="uri">https://bit.ly/datatable-user2024</a></p>
+</div>
 </section>
 <section id="the-syntax" class="slide level2">
 <h2>The syntax</h2>
@@ -262,7 +285,7 @@
 <p>You can read the syntax as “In these rows, do this, grouped by that”.</p>
 <p>It is very concise but easy to read (sometimes).</p>
 </section>
-<section id="section-2" class="slide level2 center">
+<section id="section-4" class="slide level2 center">
 <h2></h2>
 <h3 id="exercises">Exercises</h3>
 </section>
@@ -270,21 +293,21 @@
 
 <h3 id="filter-some-rows">Filter some rows</h3>
 <ol type="1">
-<li>Is your favourite band/artist listed in the data (column <code>sort_name</code> or <code>clean_name</code>)?</li>
+<li>Is your favourite band/artist listed in the data?</li>
 </ol>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>rolling_stone[clean_name <span class="sc">==</span> <span class="st">"ABBA"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>rolling_stone[clean_name <span class="sc">==</span> <span class="st">"your fav band here"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <ol start="2" type="1">
-<li>Who are the “30 under 30” in 2020? That is, bands with an average age under 30 years (column <code>ave_age_at_top_500</code>) that are in the top 30 in 2020 (<code>rank_2020</code>).</li>
+<li>How many albums got first position the Billboard magazine ranking?</li>
 </ol>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>rolling_stone[ave_age_at_top_500 <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">&amp;</span> rank_2020 <span class="sc">&lt;</span> <span class="dv">30</span>] </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>rolling_stone[peak_billboard_position <span class="sc">==</span> <span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -292,7 +315,7 @@
 
 <h3 id="work-with-columns">Work with columns</h3>
 <ol type="1">
-<li>Are more popular albums on Spotify (column <code>spotify_popularity</code>) higher in the 2003 ranking (column <code>rank_2003</code>)? Compute the correlation between the two columns (hint: there are missing values, so you will need to use <code>use = "complete.obs"</code>).</li>
+<li>Are more popular albums on Spotify (column <code>spotify_popularity</code>) higher in the 2003 ranking? Compute the correlation (hint: there are missing values, so you will need to use <code>use = "complete.obs"</code>).</li>
 </ol>
 <div class="cell">
 <details class="code-fold">
@@ -314,41 +337,28 @@
 
 <h3 id="operate-over-colums-and-groups">Operate over colums and groups</h3>
 <ol type="1">
-<li>How may bands in the Latin genre (column <code>genre</code>) appeared in the raking of 2020?</li>
-</ol>
-<div class="cell" data-solution="true">
+<li><p>How may bands in the Latin genre appeared in the raking of 2020?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>rolling_stone[genre <span class="sc">==</span> <span class="st">"latin"</span>, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<ol start="2" type="1">
-<li>How many male, female or mixed-gender (column <code>artist_gender</code>) bands were included in the 2020 ranking (column <code>rank_2020</code>)?</li>
-</ol>
-<div class="cell" data-solution="true">
+</div></li>
+<li><p>What the average of the birth year for each artist or band?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>rolling_stone[, <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020)), by <span class="ot">=</span> artist_gender]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>rolling_stone[, artist_birth_year_mean <span class="sc">:</span><span class="er">=</span> artist_birth_year_sum<span class="sc">/</span>artist_member_count]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<ol start="3" type="1">
-<li>Add a column with the average of the birth year of each band (columns <code>artist_birth_year_sum</code> and <code>artist_member_count</code> are relevant)?</li>
-</ol>
-<div class="cell" data-solution="true">
+</div></li>
+<li><p>What is the mean raking of each album over the years?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>rolling_stone[, artist_birth_year_mean <span class="sc">:</span><span class="er">=</span> artist_birth_year_sum<span class="sc">/</span>artist_member_count]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>rolling_stone[, mean_raking <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(rank_2003, rank_2012, rank_2020), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> album_id]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<ol start="4" type="1">
-<li>Add a column with the average ranking of each album (columns <code>rank_2003</code>, <code>rank_2012</code> and <code>rank_2020</code> and <code>album_id</code>).</li>
+</div></li>
 </ol>
-<div class="cell" data-solution="true">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>rolling_stone[, mean_raking <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(rank_2003, rank_2012, rank_2020), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), by <span class="ot">=</span> album_id]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
 </section></section>
 <section>
 <section id="break" class="title-slide slide level1 center">
@@ -356,7 +366,7 @@
 <p>Take 15 minutes.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="countdown" id="timer_aa600ac4" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
+<div class="countdown" id="timer_b7d16e7a" data-update-every="1" tabindex="0" style="right:0;bottom:0;">
 <div class="countdown-controls"><button class="countdown-bump-down">−</button><button class="countdown-bump-up">+</button></div>
 <code class="countdown-time"><span class="countdown-digits minutes">15</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
@@ -367,49 +377,45 @@
 
 <h3 id="piping-operations">Piping operations</h3>
 <ol type="1">
-<li>Are bands (artists with <code>artist_member_count</code> greater than 1) more successful than solo artists?</li>
-</ol>
-<div class="cell" data-solution="true">
+<li><p>Are bands more successful than solo artists?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>rolling_stone[, is_band <span class="sc">:</span><span class="er">=</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb10-3"><a></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb10-4"><a></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb10-5"><a></a>    by <span class="ot">=</span> is_band]</span>
-<span id="cb10-6"><a></a></span>
-<span id="cb10-7"><a></a><span class="co"># Notice that due to reference semantics, this operation adds the </span></span>
-<span id="cb10-8"><a></a><span class="co"># is_band column to the data.table. You can avoid this by using </span></span>
-<span id="cb10-9"><a></a><span class="co"># an expression in the by argument.</span></span>
-<span id="cb10-10"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb10-11"><a></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb10-12"><a></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb10-13"><a></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb10-14"><a></a>    by <span class="ot">=</span> .(<span class="at">is_band =</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a>rolling_stone[, is_band <span class="sc">:</span><span class="er">=</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>] <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-3"><a></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-4"><a></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb9-5"><a></a>    by <span class="ot">=</span> is_band]</span>
+<span id="cb9-6"><a></a></span>
+<span id="cb9-7"><a></a><span class="co"># Notice that due to reference semantics, this operation adds the </span></span>
+<span id="cb9-8"><a></a><span class="co"># is_band column to the data.table. You can avoid this by using </span></span>
+<span id="cb9-9"><a></a><span class="co"># an expression in the by argument.</span></span>
+<span id="cb9-10"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb9-11"><a></a>  _[, .(<span class="at">mean_rank_2003 =</span> <span class="fu">mean</span>(rank_2003, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-12"><a></a>        <span class="at">mean_rank_2012 =</span> <span class="fu">mean</span>(rank_2012, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-13"><a></a>        <span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb9-14"><a></a>    by <span class="ot">=</span> .(<span class="at">is_band =</span> artist_member_count <span class="sc">&gt;</span> <span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<ol start="2" type="1">
-<li>What is the proportion of albums recorded in a Studio and their mean position in 2020?</li>
-</ol>
-<div class="cell" data-solution="true">
+</div></li>
+<li><p>What is the proportion of albums recorded in a Studio and their mean position in 2020?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>rolling_stone[, .(<span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb11-2"><a></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> type] <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>rolling_stone[, .(<span class="at">mean_rank_2020 =</span> <span class="fu">mean</span>(rank_2020, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-2"><a></a>                  <span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2020))), by <span class="ot">=</span> type] <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a></a>  _[, prop <span class="sc">:</span><span class="er">=</span> N<span class="sc">/</span><span class="fu">sum</span>(N)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
-<ol start="3" type="1">
-<li>What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column <code>years_between</code>) for each genre?</li>
-</ol>
-<div class="cell" data-solution="true">
+</div></li>
+<li><p>What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column <code>years_between</code> ) for each genre?</p>
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>rolling_stone[, .(<span class="at">mean_years =</span> <span class="fu">mean</span>(years_between, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), .N),</span>
-<span id="cb12-2"><a></a>                by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a></a>  _[<span class="fu">order</span>(mean_years)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a>rolling_stone[, .(<span class="at">mean_years =</span> <span class="fu">mean</span>(years_between, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), .N),</span>
+<span id="cb11-2"><a></a>                by <span class="ot">=</span> genre] <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a></a>  _[<span class="fu">order</span>(mean_years)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-</div>
+</div></li>
+</ol>
 </section>
 <section class="slide level2">
 
@@ -419,13 +425,13 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
-<span id="cb13-3"><a></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb13-4"><a></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb13-5"><a></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb13-6"><a></a>  _[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
-<span id="cb13-7"><a></a>    by <span class="ot">=</span> .(rank_year, artist_gender)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb12-3"><a></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb12-4"><a></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb12-5"><a></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-6"><a></a>  _[, .(<span class="at">mean_rank =</span> <span class="fu">mean</span>(rank, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), </span>
+<span id="cb12-7"><a></a>    by <span class="ot">=</span> .(rank_year, artist_gender)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></li>
 </ol>
@@ -438,36 +444,36 @@
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb14-2"><a></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
-<span id="cb14-3"><a></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender)] <span class="sc">|&gt;</span> </span>
-<span id="cb14-4"><a></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb14-5"><a></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb14-6"><a></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
-<span id="cb14-7"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
-<span id="cb14-8"><a></a>  <span class="fu">geom_line</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb13-2"><a></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_2003))), </span>
+<span id="cb13-3"><a></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender)] <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a></a>  <span class="fu">dcast</span>(decade <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a></a>  <span class="fu">setnafill</span>(<span class="at">fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb13-7"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb13-8"><a></a>  <span class="fu">geom_line</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></li>
 <li><p>Has this changed between the different ranking years? (You need to first melt and then dcast)</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
-<span id="cb15-2"><a></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
-<span id="cb15-3"><a></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
-<span id="cb15-4"><a></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
-<span id="cb15-5"><a></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-6"><a></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank))),</span>
-<span id="cb15-7"><a></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender, rank_year)] <span class="sc">|&gt;</span> </span>
-<span id="cb15-8"><a></a>  <span class="fu">dcast</span>(decade <span class="sc">+</span> rank_year <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-9"><a></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
-<span id="cb15-10"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
-<span id="cb15-11"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>rolling_stone <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a></a>  <span class="fu">melt</span>(<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"release_year"</span>, <span class="st">"album_id"</span>, <span class="st">"artist_gender"</span>), </span>
+<span id="cb14-3"><a></a>       <span class="at">measure.vars =</span> <span class="fu">c</span>(<span class="st">"rank_2003"</span>, <span class="st">"rank_2012"</span>, <span class="st">"rank_2020"</span>), </span>
+<span id="cb14-4"><a></a>       <span class="at">variable.name =</span> <span class="st">"rank_year"</span>,</span>
+<span id="cb14-5"><a></a>       <span class="at">value.name =</span> <span class="st">"rank"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-6"><a></a>  _[, .(<span class="at">N =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank))),</span>
+<span id="cb14-7"><a></a>    by <span class="ot">=</span> .(<span class="at">decade =</span> <span class="fu">floor</span>(release_year <span class="sc">/</span> <span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, artist_gender, rank_year)] <span class="sc">|&gt;</span> </span>
+<span id="cb14-8"><a></a>  <span class="fu">dcast</span>(decade <span class="sc">+</span> rank_year <span class="sc">~</span> artist_gender, <span class="at">value.var =</span> <span class="st">"N"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-9"><a></a>  _[, ratio <span class="sc">:</span><span class="er">=</span> Male <span class="sc">/</span> (Male <span class="sc">+</span> Female)] <span class="sc">|&gt;</span> </span>
+<span id="cb14-10"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(decade, ratio)) <span class="sc">+</span></span>
+<span id="cb14-11"><a></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> rank_year))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div></li>
 </ol>
 </section>
-<section id="section-3" class="slide level2 center">
+<section id="section-5" class="slide level2 center">
 <h2></h2>
 <h3 id="how-to-contribute">How to contribute</h3>
 </section>
