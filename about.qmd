@@ -27,7 +27,7 @@ If you have any time/interest, we could use your help!
 ## ...the tutorial
 
 This tutorial was developed to be presented at useR! 2024 thanks to a travel award given to Pao.
-We hope to be able to share the recordings as soon as they are available.
+The original slides for that version of the tutorial are available [here](slides_useR.qmd).
 
 ## ...us
 
