@@ -34,7 +34,6 @@ library(printr)
 rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-05-07/rolling_stone.csv')
 ```
 
-
 ## What data.table?
 
 At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
@@ -53,7 +52,7 @@ Most R functions and methods uses copy-on-modify.
 This means that modifying an object almost always creates a new copy of the object, while the original one is kept unmodified.
 For example this code
 
-```r
+``` r
 my_data |> 
   mutate(new_column = old_column*2)
 ```
@@ -63,14 +62,14 @@ returns a new tibble that is a copy of `my_data` with a new column but it doesn'
 data.table uses modify-in-place, which means that objects are **not** copied whene modified.
 This code
 
-```r
+``` r
 my_data[, new_column := old_column*2]
 ```
 
 doesn't create a new copy of `my_data` but it rather modifies `my_data` directly.
 This is similar to the base R code:
 
-```r
+``` r
 my_data$new_column <- data$new_column
 ```
 
@@ -88,7 +87,7 @@ This function not only is fast, but it automatically detects the delimiter and g
 library(data.table)
 ```
 
-```r
+``` r
 rolling_stone <- fread('data/rolling_stone.csv')
 ```
 
@@ -101,7 +100,7 @@ rolling_stone <- fread('https://raw.githubusercontent.com/rfordatascience/tidytu
 `fread()` will return a data.table object.
 If you read a dataset as a data.frame or tibble and want to create it as a But sometimes you'll have a data.frame or a tibble that you loaded into R using other methods.
 You can convert them to data.table either with the `as.data.table()` or `setDT()` functions.
-The difference is that `as.data.table()` returns a copy of the data as a data.table and `setDT()` changes the data in place (as it is expected by the "set" prefix).
+The difference is that `as.data.table()` returns a copy of the data as a data.table and `setDT()` changes the data in place (as denoted by the "set" prefix).
 
 ```{r}
 setDT(rolling_stone)
@@ -110,7 +109,7 @@ setDT(rolling_stone)
 ### The Rolling Stone data
 
 The data we'll use comes from the [TidyTuesday project](https://github.com/rfordatascience/tidytuesday), includes album rankings from Rolling Stone magazine.
-It has [21 variables](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md#data-dictionary) and 691 observations, not a big task for data.table but it will help us to explore some of the funtionalities.
+It has [21 variables](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md#data-dictionary) and 691 observations, not a big task for data.table but it will help us to explore some of the functionalities.
 
 ```{r}
 str(rolling_stone)
@@ -133,7 +132,7 @@ Where <code>**DT**</code> is a data.table object, the <code class="rows">[**i**]
 You can read the syntax as "In these rows, do this, grouped by that".
 It is very concise but easy to read (sometimes).
 
-Let's start operating over `i`, meaning over the rows of the table.
+Let's start operating over `i`{.rows}, meaning over the rows of the table.
 
 ## Subset rows in [i]{.rows}
 
@@ -150,24 +149,32 @@ This is similar to how we'd use a regular data.frame:
 rolling_stone[rolling_stone$rank_2003 == 1]
 ```
 
+
+::: {.alert .alert-info}
+**data.tables are data.frames**
+
+Notice that we can use data.frame syntax on a data.table and it will work just fine in most cases. 
+:::
+
 But because all expressions in <code class="rows">[i]{.rows}</code> are evaluated in the context of the data.table, we don't need to type the name of the data.frame again.
 This becomes even more convenient with longer expressions.
-For example, what are the female bands with more than 3 members?
+For example, which are the female bands with more than 3 members?
 
 ```{r}
 rolling_stone[artist_gender == "Female" & artist_member_count > 3]
 ```
 
-It is also possible to order de rows by any of the columns (we hide the output because it's too long).
+It is also possible to order de rows by any of the columns.
 
-```r
-rolling_stone[order(rank_2003)]
+```{r}
+rolling_stone[order(rank_2003)] |> 
+  head()
 ```
 
 ::: {.alert .alert-success}
 **Filter some rows!**
 
-1.  Is your favourite band/artist listed in the data?
+1.  Is your favourite band/artist listed in the data (column `sort_name` or `clean_name`)?
 
     ```{webr-r}
     #| autorun: false
@@ -176,24 +183,21 @@ rolling_stone[order(rank_2003)]
     ```
 
     ```{r, solution=TRUE}
-    rolling_stone[clean_name == "your fav band here"]
+    rolling_stone[clean_name == "ABBA"]
     ```
 
-2.  Which albums got first position the Billboard magazine ranking?
+2.  Who are the "30 under 30" in 2020? That is, bands with an average age under 30 years (column `ave_age_at_top_500`) that are in the top 30 in 2020 (`rank_2020`).
 
     ```{webr-r}
     #| autorun: false
     # Write your code here!
     rolling_stone
     ```
-    
-    ```{r, solution=TRUE}
-    rolling_stone[peak_billboard_position == 1] 
-    ```
 
+    ```{r, solution=TRUE}
+    rolling_stone[ave_age_at_top_500 < 30 & rank_2020 < 30] 
+    ```
 :::
-
-
 
 ## Operating with column(s) in [j]{.columns}
 
@@ -221,13 +225,13 @@ rolling_stone[, uniqueN(rank_2003, na.rm = TRUE)]
 ```
 
 Huh.
-We seem to be missing two ranking?
+We seem to be missing two rankings?
 
 ::: {.alert .alert-success}
 **Your turn**
 
-
-1. Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking? Compute the correlation (hint: there are missing values, so you will need to use `use = "complete.obs"`).
+1.  Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking (column `rank_2003`)?
+    Compute the correlation between the two columns (hint: there are missing values, so you will need to use `use = "complete.obs"`).
 
     ```{webr-r}
     #| autorun: false
@@ -238,9 +242,8 @@ We seem to be missing two ranking?
     ```{r, solution=TRUE}
     rolling_stone[, cor(spotify_popularity, rank_2003, use = "complete.obs")]
     ```
-    
 
-1.  Which rankings are missing in the database?
+2.  Which rankings are missing in the database?
 
     ```{webr-r}
     #| autorun: false
@@ -270,13 +273,13 @@ rolling_stone[genre == "Electronic", mean(rank_2003, na.rm = TRUE)]
 
 data.table:
 
-1.  find the *row indices* that match `genre == "Electronic"`. It does not subset over the entire table.
-2.  as j uses only one column to compute the mean, data.table subsets only that column and compute the mean.
+1.  finds the *row indices* that match `genre == "Electronic"`. It does not subset over the entire table.
+2.  as [j]{.columns} uses only one column to compute the mean, data.table subsets only that column and computes the mean.
 
 data.table can see all three components of the query (i, j and by) and optimise it altogether before evaluation, not each separately.
 :::
 
-There are a lot of genres so it would't be too convenient to write one line for each one.
+There are a lot of genres, so it wouldn't be too convenient to write one line for each one.
 It's much better to group rows by genre using [`by`]{.by}:
 
 ```{r}
@@ -314,7 +317,7 @@ Some of the genres are relatively highly rated, but have very few examples inclu
 You can select only some columns using the same syntax but without applying any summary function.
 To return a data.table with just the columns `sort_name` and `rank_2003` you'd do:
 
-```r
+``` r
 rolling_stone[, .(sort_name, rank_2003)]
 ```
 :::
@@ -345,7 +348,7 @@ This makes it very efficient, but potentially surprising!
 ::: {.alert .alert-success}
 **Your turn**
 
-1.  How may bands in the Latin genre appeared in the raking of 2020?
+1.  How may bands in the Latin genre (column `genre`) appeared in the raking of 2020?
 
     ```{webr-r}
     #| autorun: false
@@ -353,12 +356,23 @@ This makes it very efficient, but potentially surprising!
     rolling_stone
     ```
 
-
     ```{r, solution=TRUE}
     rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
     ```
 
-2.  What the average of the birth year for each artist or band?
+2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)? 
+
+    ```{webr-r}
+    #| autorun: false
+    # Write your code here!
+    rolling_stone
+    ```
+
+    ```{r, solution=TRUE}
+    rolling_stone[, sum(!is.na(rank_2020)), by = artist_gender]
+    ```
+
+3.  Add a column with the average of the birth year of each band (columns `artist_birth_year_sum` and `artist_member_count` are relevant)?
 
     ```{webr-r}
     #| autorun: false
@@ -370,7 +384,7 @@ This makes it very efficient, but potentially surprising!
     rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
     ```
 
-3.  What is the mean raking of each album over the years?
+4.  Add a column with the average ranking of each album (columns `rank_2003`, `rank_2012` and `rank_2020` and `album_id`).
 
     ```{webr-r}
     #| autorun: false
@@ -397,34 +411,26 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre][order(
 Or like this for better readability:
 
 ``` r
-rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre
-][order(mean_rank)]
+rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] |> 
+    _[order(mean_rank)]
 ```
 
-There are [other possibilities, like using a pipe operator](https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/).
-You could use the old and wise magrittr pipe `%>%` along with `.` as a placeholder which, within a magrittr pipe, refers to the result of the previous step.
+This works because since R 4.3.0, `_` is a placeholder for the left-hand side of the pipe. 
+
+There are [other possibilities](https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/).
+You could use the old and wise magrittr pipe `%>%` along with `.` as a placeholder.
 
 ``` r
 rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] %>%
-.[order(mean_rank)]
+    .[order(mean_rank)]
 ```
 
 ::: {.alert .alert-info}
 It is very important to distinguish between the `.` as alias for `list()` an the `.` as a placeholder within the magrittr pipe.
 :::
 
-Using the native pipe `|>` before R 4.3.0 was more tricky as the pipe didn't have a placeholder.
-But since that R version the native pipe supports a `_` placeholder to the right-hand side fo the pipe:
 
-``` r
-rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] |>
-_[order(mean_rank)]
-```
-
-Now you can chain operations using any of the options.
-We'll stick to the `|>` as is what we usually use.
-
-Let's get serious about analysing this data.
+Let's get serious about analysing these data.
 It would be interesting to add the proportion as well as the number of albums in each genre:
 
 ```{r}
@@ -445,7 +451,7 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE),
   _[order(-prop)] 
 ```
 
-When doing lot's of column modifications like in the previous lines, it's more convenient (and sometimes more efficient) to do all the modifications in a single step.
+When doing lots of column modifications like in the previous lines, it's more convenient (and sometimes more efficient) to do all the modifications in a single step.
 For that we can use the `let()` function, which is like a functional form of the walrus operator that can assign multiple columns at once:
 
 ```{r}
@@ -482,14 +488,13 @@ That's right, you can pipe in a plot after doing the calculations.
 ::: {.alert .alert-success}
 **Your turn**
 
-1.  Are bands more successful than solo artists?
+1.  Are bands (artists with `artist_member_count` greater than 1) more successful than solo artists?
 
     ```{webr-r}
     #| autorun: false
     # Write your code here!
     rolling_stone
     ```
-
 
     ```{r, solution=TRUE}
 
@@ -543,9 +548,7 @@ That's right, you can pipe in a plot after doing the calculations.
 ## Special symbols
 
 data.table has special symbols that provide extra functionality.
-We are going to only mention `.N` , which counts the number of rows in the group and it is particularly useful when used along with `by`.
-
-How many albums per year were included in the 2003 ranking?
+We are going to only mention `.N` , which counts the number of rows in the group and it is particularly useful when used along with `by`.How many albums per year were included in the 2003 ranking?
 To answer this question we can first filter only albums that were included in the 2003 ranking and then count the number of rows per `release_year`?
 
 ```{r}
@@ -560,7 +563,7 @@ Let's plot that:
 rolling_stone[!is.na(rank_2003)] |> 
   _[, .N, by = release_year] |> 
   ggplot(aes(release_year, N)) +
-  geom_line()
+  geom_col()
 ```
 
 Interestingly, the majority of the albums in the raking of 2003 where released between the mid 60s and late 70s.
@@ -579,7 +582,7 @@ rolling_stone[, .(N_2003 = sum(!is.na(rank_2003)),
   head()
 ```
 
-This is very tedious, error-prone and makes plotting the results more difficult.
+This is very tedious, error-prone and makes plotting the result more difficult.
 Every time you are applying the same operation to multiple columns it is very likely that you'd be better off reshaping your data.
 In this case, we would like to have a single column with the ranking position and another column that identifies which year's ranking it is.
 So, lets *melt* the table.
@@ -601,7 +604,7 @@ By default, the new variables are `variable` and `value` but we changed those na
 ::: {.alert .alert-info}
 When you have a lot of columns that go into `measure.vars` a nd that are named consistently, you can use pattern-based column marching using regular expressions and the `patterns()` function like here.
 
-```r
+``` r
 rolling_stone |> 
   melt(id.vars = c("release_year", "album_id"), 
        measure.vars = patterns("^rank"), 
@@ -651,7 +654,7 @@ It looks like the albums released around 1970 were and still are the most popula
     # Write your code here!
     rolling_stone
     ```
-    
+
     ```{r, solution=TRUE}
     rolling_stone |> 
       melt(id.vars = c("release_year", "album_id", "artist_gender"), 
@@ -735,14 +738,15 @@ Compilation albums make up less than 10% of the picks, except in the 90s.
       geom_line()
     ```
 
-2.  Has this changed between the different ranking years? (You need to first melt and then dcast)
+2.  Has this changed between the different ranking years?
+    (You need to first melt and then dcast)
 
     ```{webr-r}
     #| autorun: false
     # Write your code here!
     rolling_stone
     ```
-    
+
     ```{r, solution=TRUE}
     rolling_stone |> 
       melt(id.vars = c("release_year", "album_id", "artist_gender"), 

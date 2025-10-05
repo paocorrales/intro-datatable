@@ -27,15 +27,13 @@ All materials in this course are under the license <a rel="license" href="https:
 
 ### Who are we?
 
-Pao, Elio, Kelly
+Pao, Elio
 
 ##  {.center}
 
 ### Who are you?
 
-### Introduce yourself to your neighbours 👋
-
-Share your name and how many hours it took you to arrive to Salzburg
+Share your name and what's your favourite ice-cream flavour.
 
 ## Housekeeping
 
@@ -50,31 +48,6 @@ install.packages("data.table")
 
 -   ggplot2 or any other visualisation package (optional)
 
-::: columns
-::: {.column width="50%"}
-<center>
-
-### <i class="fa fa-wifi"></i>
-
-Wi-Fi network name
-
-userr2024
-
-</center>
-:::
-
-::: {.column width="50%"}
-<center>
-
-### <i class="fa fa-key"></i>
-
-salzburg
-
-`TODO-ADD-LATER`
-
-</center>
-:::
-:::
 
 ## What is data.table?
 
@@ -93,21 +66,12 @@ It also provides a whole set of extra functions for reading from and writing to 
 
 If you can, try the code we will show you on the screen.
 
-For the exercises, work in teams and use the sticky notes!
+If you're stuck or need help, tell us in the chat. 
 
-. . .
-
-🟪 "I'm stuck and need help!"
-
-. . .
-
-🟩 "I finished the exercise"
-
-. . .
 
 ### Materials
 
-[https://bit.ly/datatable-user2024](https://bit.ly/datatable-user2024)
+<https://paocorrales.github.io/intro-datatable/>
 
 ## The syntax
 
@@ -120,6 +84,7 @@ The general data.table syntax looks like this:
 </p>
 </div>
 ```
+
 Where <code>**DT**</code> is a data.table object, the <code class="rows">[**i**]{.rows}</code> argument is used for filtering and joining operations, the <code class="columns">[**j**]{.columns}</code> argument can summarise and transform, and the <code class="by">[**by**]{.by}</code> argument defines the groups to which to apply these operations.
 
 You can read the syntax as "In these rows, do this, grouped by that".
@@ -134,24 +99,24 @@ It is very concise but easy to read (sometimes).
 
 ### Filter some rows
 
-1.  Is your favourite band/artist listed in the data?
+1.  Is your favourite band/artist listed in the data (column `sort_name` or `clean_name`)?
 
 ```{r}
-rolling_stone[clean_name == "your fav band here"]
+rolling_stone[clean_name == "ABBA"]
 ```
 
-2.  How many albums got first position the Billboard magazine ranking?
+
+2.  Who are the "30 under 30" in 2020? That is, bands with an average age under 30 years (column `ave_age_at_top_500`) that are in the top 30 in 2020 (`rank_2020`).
 
 ```{r}
-rolling_stone[peak_billboard_position == 1]
+rolling_stone[ave_age_at_top_500 < 30 & rank_2020 < 30] 
 ```
-
 
 ------------------------------------------------------------------------
 
 ### Work with columns
 
-1. Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking? Compute the correlation (hint: there are missing values, so you will need to use `use = "complete.obs"`).
+1.  Are more popular albums on Spotify (column `spotify_popularity`) higher in the 2003 ranking (column `rank_2003`)? Compute the correlation between the two columns (hint: there are missing values, so you will need to use `use = "complete.obs"`).
 
 ```{r}
 rolling_stone[, cor(spotify_popularity, rank_2003, use = "complete.obs")]
@@ -167,28 +132,36 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
 
 ### Operate over colums and groups
 
-1.  How may bands in the Latin genre appeared in the raking of 2020?
 
-    ```{r}
-    rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
-    ```
+1.  How may bands in the Latin genre (column `genre`) appeared in the raking of 2020?
 
-2.  What the average of the birth year for each artist or band?
+```{r, solution=TRUE}
+rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
+```
 
-    ```{r}
-    rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
-    ```
+2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)? 
 
-3.  What is the mean raking of each album over the years?
 
-    ```{r}
-    rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
-    ```
+```{r, solution=TRUE}
+rolling_stone[, sum(!is.na(rank_2020)), by = artist_gender]
+```
+
+3.  Add a column with the average of the birth year of each band (columns `artist_birth_year_sum` and `artist_member_count` are relevant)?
+
+```{r, solution=TRUE}
+rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_count]
+```
+
+4.  Add a column with the average ranking of each album (columns `rank_2003`, `rank_2012` and `rank_2020` and `album_id`).
+
+```{r, solution=TRUE}
+rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
+```
 
 
 # Break!
 
-Take 15 minutes. 
+Take 15 minutes.
 
 ```{r, eval=TRUE, echo=FALSE}
 countdown::countdown(minutes = 15,  
@@ -201,44 +174,46 @@ countdown::countdown(minutes = 15,
 
 ### Piping operations
 
-1.  Are bands more successful than solo artists?
+1.  Are bands (artists with `artist_member_count` greater than 1) more successful than solo artists?
 
-    ```{r}
 
-    rolling_stone[, is_band := artist_member_count > 1] |>
-      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
-            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
-            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
-        by = is_band]
+```{r, solution=TRUE}
 
-    # Notice that due to reference semantics, this operation adds the 
-    # is_band column to the data.table. You can avoid this by using 
-    # an expression in the by argument.
-    rolling_stone |> 
-      _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
-            mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
-            mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
-        by = .(is_band = artist_member_count > 1)]
+rolling_stone[, is_band := artist_member_count > 1] |>
+  _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+        mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+        mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+    by = is_band]
 
-    ```
+# Notice that due to reference semantics, this operation adds the 
+# is_band column to the data.table. You can avoid this by using 
+# an expression in the by argument.
+rolling_stone |> 
+  _[, .(mean_rank_2003 = mean(rank_2003, na.rm = TRUE),
+        mean_rank_2012 = mean(rank_2012, na.rm = TRUE),
+        mean_rank_2020 = mean(rank_2020, na.rm = TRUE)), 
+    by = .(is_band = artist_member_count > 1)]
+
+```
 
 2.  What is the proportion of albums recorded in a Studio and their mean position in 2020?
 
-    ```{r}
-    rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
-                      N = sum(!is.na(rank_2020))), by = type] |> 
-      _[, prop := N/sum(N)]
+```{r, solution=TRUE}
+rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
+                  N = sum(!is.na(rank_2020))), by = type] |> 
+  _[, prop := N/sum(N)]
 
-    ```
+```
 
-3.  What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column `years_between` ) for each genre?
+3.  What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column `years_between`) for each genre?
 
-    ```{r}
-    rolling_stone[, .(mean_years = mean(years_between, na.rm = TRUE), .N),
-                    by = genre] |> 
-      _[order(mean_years)]
-    ```
 
+```{r, solution=TRUE}
+rolling_stone[, .(mean_years = mean(years_between, na.rm = TRUE), .N),
+                by = genre] |> 
+  _[order(mean_years)]
+```
+    
 ------------------------------------------------------------------------
 
 ### Let's melt the data

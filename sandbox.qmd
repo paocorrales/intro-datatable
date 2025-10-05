@@ -8,7 +8,7 @@ filters:
   - webr  
 ---
 
-This is a sandbox, a code chunk to run R code using webR. data.table and ggplot2 are already loaded along with the Rolling Stone data set. Everything is ready to run the tutorial' examples and exercises. 
+This is a sandbox, a code chunk to run R code using webR. data.table and ggplot2 are already loaded along with the Rolling Stone data set. Everything is ready to run the tutorial's examples and exercises. 
 
 
 ```{webr-r}
