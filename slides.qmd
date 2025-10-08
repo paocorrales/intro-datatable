@@ -48,7 +48,6 @@ install.packages("data.table")
 
 -   ggplot2 or any other visualisation package (optional)
 
-
 ## What is data.table?
 
 At its core, data.table provides an enhanced version of data.frames that are faster, more memory efficient and can be manipulated using a more concise syntax.
@@ -66,8 +65,7 @@ It also provides a whole set of extra functions for reading from and writing to 
 
 If you can, try the code we will show you on the screen.
 
-If you're stuck or need help, tell us in the chat. 
-
+If you're stuck or need help, tell us in the chat.
 
 ### Materials
 
@@ -91,6 +89,32 @@ You can read the syntax as "In these rows, do this, grouped by that".
 
 It is very concise but easy to read (sometimes).
 
+## Reference semantics
+
+Most R functions and methods uses **copy-on-modify**.
+
+This code returns a new tibble that is a copy of `my_data` with a new column but it doesn't modify `my_data`.
+
+``` r
+my_data |> 
+  mutate(new_column = old_column*2)
+```
+. . .
+
+data.table uses **modify-in-place**, which means that objects are **not** copied when modified.
+This code doesn't create a new copy of `my_data` but it rather modifies `my_data` directly.
+
+``` r
+my_data[, new_column := old_column*2]
+```
+. . .
+
+This is similar to the base R code:
+
+``` r
+my_data$new_column <- data$new_column
+```
+
 ##  {.center}
 
 ### Exercises
@@ -104,7 +128,6 @@ It is very concise but easy to read (sometimes).
 ```{r}
 rolling_stone[clean_name == "ABBA"]
 ```
-
 
 2.  Who are the "30 under 30" in 2020? That is, bands with an average age under 30 years (column `ave_age_at_top_500`) that are in the top 30 in 2020 (`rank_2020`).
 
@@ -132,15 +155,13 @@ rolling_stone[, which(!(1:500 %in% rank_2003))]
 
 ### Operate over colums and groups
 
-
 1.  How may bands in the Latin genre (column `genre`) appeared in the raking of 2020?
 
 ```{r, solution=TRUE}
 rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
 ```
 
-2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)? 
-
+2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)?
 
 ```{r, solution=TRUE}
 rolling_stone[, sum(!is.na(rank_2020)), by = artist_gender]
@@ -158,7 +179,6 @@ rolling_stone[, artist_birth_year_mean := artist_birth_year_sum/artist_member_co
 rolling_stone[, mean_raking := mean(c(rank_2003, rank_2012, rank_2020), na.rm = TRUE), by = album_id]
 ```
 
-
 # Break!
 
 Take 15 minutes.
@@ -175,7 +195,6 @@ countdown::countdown(minutes = 15,
 ### Piping operations
 
 1.  Are bands (artists with `artist_member_count` greater than 1) more successful than solo artists?
-
 
 ```{r, solution=TRUE}
 
@@ -207,13 +226,12 @@ rolling_stone[, .(mean_rank_2020 = mean(rank_2020, na.rm = TRUE),
 
 3.  What is the mean number of years between an artist debut album and the release of their first top 500 album (see the column `years_between`) for each genre?
 
-
 ```{r, solution=TRUE}
 rolling_stone[, .(mean_years = mean(years_between, na.rm = TRUE), .N),
                 by = genre] |> 
   _[order(mean_years)]
 ```
-    
+
 ------------------------------------------------------------------------
 
 ### Let's melt the data
