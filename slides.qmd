@@ -71,24 +71,6 @@ If you're stuck or need help, tell us in the chat.
 
 <https://paocorrales.github.io/intro-datatable/>
 
-## The syntax
-
-The general data.table syntax looks like this:
-
-```{=html}
-<div  style=" margin-left: auto; margin-right: auto;display: block; text-align:center; width:fit-content;"> 
-<p style="font-size:200%;font-weight:bold" >
-<code>DT[<span class="rows">i</span>, <span class="columns">j</span>, <span class="by">by</span>]</code>
-</p>
-</div>
-```
-
-Where <code>**DT**</code> is a data.table object, the <code class="rows">[**i**]{.rows}</code> argument is used for filtering and joining operations, the <code class="columns">[**j**]{.columns}</code> argument can summarise and transform, and the <code class="by">[**by**]{.by}</code> argument defines the groups to which to apply these operations.
-
-You can read the syntax as "In these rows, do this, grouped by that".
-
-It is very concise but easy to read (sometimes).
-
 ## Reference semantics
 
 Most R functions and methods uses **copy-on-modify**.
@@ -114,6 +96,25 @@ This is similar to the base R code:
 ``` r
 my_data$new_column <- data$new_column
 ```
+
+## The syntax
+
+The general data.table syntax looks like this:
+
+```{=html}
+<div  style=" margin-left: auto; margin-right: auto;display: block; text-align:center; width:fit-content;"> 
+<p style="font-size:200%;font-weight:bold" >
+<code>DT[<span class="rows">i</span>, <span class="columns">j</span>, <span class="by">by</span>]</code>
+</p>
+</div>
+```
+
+Where <code>**DT**</code> is a data.table object, the <code class="rows">[**i**]{.rows}</code> argument is used for filtering and joining operations, the <code class="columns">[**j**]{.columns}</code> argument can summarise and transform, and the <code class="by">[**by**]{.by}</code> argument defines the groups to which to apply these operations.
+
+You can read the syntax as "In these rows, do this, grouped by that".
+
+It is very concise but easy to read (sometimes).
+
 
 ##  {.center}
 

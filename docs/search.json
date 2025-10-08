@@ -231,18 +231,18 @@
     "text": "Follow along\nIf you can, try the code we will show you on the screen.\nIf you’re stuck or need help, tell us in the chat.\nMaterials\nhttps://paocorrales.github.io/intro-datatable/"
   },
   {
-    "objectID": "slides.html#the-syntax",
-    "href": "slides.html#the-syntax",
-    "title": "Efficient data analysis with data.table",
-    "section": "The syntax",
-    "text": "The syntax\nThe general data.table syntax looks like this:\n \n\nDT[i, j, by]\n\n\nWhere DT is a data.table object, the i argument is used for filtering and joining operations, the j argument can summarise and transform, and the by argument defines the groups to which to apply these operations.\nYou can read the syntax as “In these rows, do this, grouped by that”.\nIt is very concise but easy to read (sometimes)."
-  },
-  {
     "objectID": "slides.html#reference-semantics",
     "href": "slides.html#reference-semantics",
     "title": "Efficient data analysis with data.table",
     "section": "Reference semantics",
     "text": "Reference semantics\nMost R functions and methods uses copy-on-modify.\nThis code returns a new tibble that is a copy of my_data with a new column but it doesn’t modify my_data.\nmy_data |&gt; \n  mutate(new_column = old_column*2)\n\ndata.table uses modify-in-place, which means that objects are not copied when modified. This code doesn’t create a new copy of my_data but it rather modifies my_data directly.\nmy_data[, new_column := old_column*2]\n\n\nThis is similar to the base R code:\nmy_data$new_column &lt;- data$new_column"
+  },
+  {
+    "objectID": "slides.html#the-syntax",
+    "href": "slides.html#the-syntax",
+    "title": "Efficient data analysis with data.table",
+    "section": "The syntax",
+    "text": "The syntax\nThe general data.table syntax looks like this:\n \n\nDT[i, j, by]\n\n\nWhere DT is a data.table object, the i argument is used for filtering and joining operations, the j argument can summarise and transform, and the by argument defines the groups to which to apply these operations.\nYou can read the syntax as “In these rows, do this, grouped by that”.\nIt is very concise but easy to read (sometimes)."
   },
   {
     "objectID": "slides.html#section-2",
