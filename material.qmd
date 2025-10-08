@@ -59,7 +59,7 @@ my_data |>
 
 returns a new tibble that is a copy of `my_data` with a new column but it doesn't modify `my_data`.
 
-data.table uses modify-in-place, which means that objects are **not** copied whene modified.
+data.table uses modify-in-place, which means that objects are **not** copied when modified.
 This code
 
 ``` r
@@ -149,11 +149,10 @@ This is similar to how we'd use a regular data.frame:
 rolling_stone[rolling_stone$rank_2003 == 1]
 ```
 
-
 ::: {.alert .alert-info}
 **data.tables are data.frames**
 
-Notice that we can use data.frame syntax on a data.table and it will work just fine in most cases. 
+Notice that we can use data.frame syntax on a data.table and it will work just fine in most cases.
 :::
 
 But because all expressions in <code class="rows">[i]{.rows}</code> are evaluated in the context of the data.table, we don't need to type the name of the data.frame again.
@@ -186,7 +185,8 @@ rolling_stone[order(rank_2003)] |>
     rolling_stone[clean_name == "ABBA"]
     ```
 
-2.  Who are the "30 under 30" in 2020? That is, bands with an average age under 30 years (column `ave_age_at_top_500`) that are in the top 30 in 2020 (`rank_2020`).
+2.  Who are the "30 under 30" in 2020?
+    That is, bands with an average age under 30 years (column `ave_age_at_top_500`) that are in the top 30 in 2020 (`rank_2020`).
 
     ```{webr-r}
     #| autorun: false
@@ -360,7 +360,7 @@ This makes it very efficient, but potentially surprising!
     rolling_stone[genre == "latin", sum(!is.na(rank_2020))]
     ```
 
-2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)? 
+2.  How many male, female or mixed-gender (column `artist_gender`) bands were included in the 2020 ranking (column `rank_2020`)?
 
     ```{webr-r}
     #| autorun: false
@@ -415,7 +415,7 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] |>
     _[order(mean_rank)]
 ```
 
-This works because since R 4.3.0, `_` is a placeholder for the left-hand side of the pipe. 
+This works because since R 4.3.0, `_` is a placeholder for the left-hand side of the pipe.
 
 There are [other possibilities](https://rdatatable-community.github.io/The-Raft/posts/2024-01-28-piping_data_tables-elio_campitelli/).
 You could use the old and wise magrittr pipe `%>%` along with `.` as a placeholder.
@@ -428,7 +428,6 @@ rolling_stone[, .(mean_rank = mean(rank_2003, na.rm = TRUE)), by = genre] %>%
 ::: {.alert .alert-info}
 It is very important to distinguish between the `.` as alias for `list()` an the `.` as a placeholder within the magrittr pipe.
 :::
-
 
 Let's get serious about analysing these data.
 It would be interesting to add the proportion as well as the number of albums in each genre:
